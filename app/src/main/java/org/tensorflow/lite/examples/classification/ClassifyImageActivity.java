@@ -2,10 +2,13 @@ package org.tensorflow.lite.examples.classification;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -46,13 +49,27 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
         image= findViewById(R.id.image_container);
         classfyBtn=findViewById(R.id.classifyBtn);
+        Bundle extras = getIntent().getExtras();
+        String imgPath = extras.getString("ImagePath");
 
-        Bitmap lion = BitmapFactory.decodeResource(getResources(),
-                R.drawable.lion);
-        image.setImageBitmap(lion);
+        Bitmap bitmap = null;
+        if(imgPath!=null){
+            bitmap = BitmapFactory.decodeFile(imgPath);
+        }else{
+            try {
+                Uri uri = Uri.parse(extras.getString("imageUri"));
+
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+
+        }
+        image.setImageBitmap(bitmap);
 
         //set rgbFrameBitmap from Intent
-        rgbFrameBitmap = lion;
+        rgbFrameBitmap = bitmap;
         createClassifier();
 
 
@@ -131,7 +148,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
                                         @Override
                                         public void run() {
                                             //showResultsInBottomSheet(results);
-
+                                            Log.d("aaaaa","results of classifcation: "+results);
                                         }
                                     });
                         }

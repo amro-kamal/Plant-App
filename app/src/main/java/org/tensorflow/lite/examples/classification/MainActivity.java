@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         ArrayList<imageFolder> folds = getPicturePaths();
-        ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
 
         // initialisation with id's
         recyclerView
@@ -106,9 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 RecyclerViewLayoutManager);
 
 
-        // calling constructor of adapter
-        // with source list as a parameter
-        gAdapter = new GalleryItemAdaptor(images);
+
 
         // Set Horizontal Layout Manager
         // for Recycler view
@@ -120,9 +117,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(HorizontalLayout);
 
 
-        if (images.size()==0) {
+        if (folds.size()==0) {
             recyclerView.setVisibility(View.INVISIBLE);
         } else {
+            ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
+            // calling constructor of adapter
+            // with source list as a parameter
+            gAdapter = new GalleryItemAdaptor(images);
             // Set adapter on recycler view
             recyclerView.setAdapter(gAdapter);
         }
@@ -234,26 +235,16 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                /////////The image is stored in the bitmap
-                opnenImageActivity();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            Intent intent = new Intent(this, ClassifyImageActivity.class);
+            intent.putExtra("imageUri", imageUri.toString());
+            startActivity(intent);
 
-            }
+
 
         }
     }
 
-    public void opnenImageActivity() {
-        Intent intent = new Intent(this, ImageActivity.class);
-        //put the image into the intent
-        startActivity(intent);
-
-
-    }
 
 
     public void openClasifierActivity() {
@@ -294,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
                             .apply(new RequestOptions().centerCrop())
                             .into(holder.getImageView());
                     holder.getImageView().setOnClickListener(v ->{
-                        Log.d("aaaaa0", "pic cliiiiiiiiiiiick");
                         Intent in = new Intent(getApplicationContext() , ClassifyImageActivity.class);
                         in.putExtra("ImagePath", image.getPicturePath());
                         startActivity(in);
