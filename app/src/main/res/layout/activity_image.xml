@@ -29,7 +29,7 @@
         android:layout_marginRight="30dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:background="@drawable/camer_btn_shape"
+        android:background="@drawable/camera_btn_shape"
         android:elevation="2dp"
         android:text="classify The Disease"
         android:textColor="@color/white"/>
