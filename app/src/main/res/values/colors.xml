@@ -11,4 +11,8 @@
     <color name="semi_transparent">#66000000</color>
     <color name="green_transparent">#8B00A424</color>
 
+    <color name="dark_green">#13ad69</color>
+    <color name="asher">#555F61</color>
+    <color name="raven">#373D3F</color>
+
 </resources>
