@@ -42,6 +42,7 @@
                     android:text="Disease Detected"
                     />
 
+
             </LinearLayout>
             <TextView
                 android:id="@+id/diseaseIdentifiedTxt"
@@ -51,6 +52,14 @@
                 android:textSize="16sp"
                 android:text="Disease identified in Tomato Plant."
                 />
+        <TextView
+            android:id="@+id/model_confidence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:text="Confidence %"
+            />
     </LinearLayout>
 
     <ScrollView

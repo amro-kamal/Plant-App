@@ -1,5 +1,6 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -147,7 +148,10 @@ public class ClassifyImageActivity extends AppCompatActivity {
                                     new Runnable() {
                                         @Override
                                         public void run() {
-                                            //showResultsInBottomSheet(results);
+                                            SendResultToResultActivity(results);
+
+
+
                                             Log.d("aaaaa","results of classifcation: "+results);
                                         }
                                     });
@@ -156,6 +160,26 @@ public class ClassifyImageActivity extends AppCompatActivity {
                 });
     }
 
+    public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
+        Intent intent = new Intent(ClassifyImageActivity.this, ResultActivity.class);
+
+        if (results != null && results.size() >= 3) {
+            Classifier.Recognition recognition = results.get(0);
+            if (recognition != null) {
+                if (recognition.getTitle() != null) {
+                    intent.putExtra("Disease title", recognition.getTitle());
+                }
+                if (recognition.getConfidence() != null) {
+                    intent.putExtra("confidence", String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+                }
+
+            }
+        }
+        Log.d("ClassifyImage","send REsult");
+
+        startActivity(intent);
+
+    }
     private void recreateClassifier(Classifier.Model model, Classifier.Device device, int numThreads) {
         if (classifier != null) {
             LOGGER.d("Closing classifier.");
@@ -181,5 +205,6 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
 
     }
+
 }
 
