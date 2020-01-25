@@ -1,5 +1,6 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
     private Handler handler;
     private HandlerThread handlerThread;
+    private Uri uriToSend= null;
 
 
     private static final Logger LOGGER = new Logger();
@@ -55,10 +58,12 @@ public class ClassifyImageActivity extends AppCompatActivity {
         Bitmap bitmap = null;
         if(imgPath!=null){
             bitmap = BitmapFactory.decodeFile(imgPath);
+            File f = new File(imgPath);
+            uriToSend = Uri.fromFile(f);
         }else{
             try {
                 Uri uri = Uri.parse(extras.getString("imageUri"));
-
+                uriToSend = uri;
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -149,6 +154,12 @@ public class ClassifyImageActivity extends AppCompatActivity {
                                         public void run() {
                                             //showResultsInBottomSheet(results);
                                             Log.d("aaaaa","results of classifcation: "+results);
+                                            if(uriToSend!=null){
+                                                Intent in  = new Intent(getApplicationContext(), ResultActivity.class);
+                                                in.putExtra("ImageUri" ,uriToSend.toString() );
+                                                //pass results
+                                                startActivity(in);
+                                            }
                                         }
                                     });
                         }

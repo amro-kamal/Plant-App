@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (folds.size()==0) {
-            recyclerView.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.GONE);
         } else {
             ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
             // calling constructor of adapter
