@@ -31,7 +31,7 @@
                     android:layout_height="40dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/circle_img"
-                    android:src="@drawable/ic_launcher_foreground"
+                    android:src="@drawable/ic_launcher"
                     />
 
                 <TextView
@@ -52,14 +52,7 @@
                 android:textSize="16sp"
                 android:text="Disease identified in Tomato Plant."
                 />
-        <TextView
-            android:id="@+id/model_confidence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:text="Confidence %"
-            />
+
     </LinearLayout>
 
     <ScrollView
@@ -91,8 +84,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dark_green"
-                    android:textSize="20sp"
-                    android:text="Disease identified in Tomato Plant."
+                    android:textSize="30sp"
+                    android:text="Disease"
+                    />
+                <TextView
+                    android:id="@+id/model_confidence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_green"
+                    android:textSize="25sp"
+                    android:text="Confidence %"
                     />
 
                 <LinearLayout

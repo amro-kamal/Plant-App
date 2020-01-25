@@ -3,6 +3,7 @@ package org.tensorflow.lite.examples.classification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,8 +25,8 @@ public class ResultActivity extends AppCompatActivity {
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.classification_result_act);
 
         leafImg = findViewById(R.id.leafImg);
@@ -36,9 +37,10 @@ public class ResultActivity extends AppCompatActivity {
         recognitionValueTextView=(TextView) findViewById(R.id.model_confidence);
 
         Intent intent =getIntent();
+
         String DiseaseTitle=  intent.getStringExtra("Disease title");
         String confidence=  intent.getStringExtra("confidence");
-        diseaseTypeTxt.setText(DiseaseTitle);
+        diseaseTypeTxt.setText("Disease Type is"+DiseaseTitle);
         recognitionValueTextView.setText(confidence);
 
 

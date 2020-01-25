@@ -251,10 +251,13 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
+            Log.d("imageuri","image received");
 
             Intent intent = new Intent(this, ClassifyImageActivity.class);
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
+            Log.d("imageuri","image sending");
+
 
 
 
