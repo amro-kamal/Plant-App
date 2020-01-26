@@ -1,5 +1,6 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import org.tensorflow.lite.examples.classification.tflite.Classifier;
+
+import java.util.List;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -21,10 +25,12 @@ public class ResultActivity extends AppCompatActivity {
     private ImageView plantImg;
     private TextView categoryTxt;
     private Bitmap image;
+    private TextView recognitionValueTextView;
+
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.classification_result_act);
 
         leafImg = findViewById(R.id.leafImg);
@@ -32,6 +38,15 @@ public class ResultActivity extends AppCompatActivity {
         diseaseIdentifiedTxt = findViewById(R.id.diseaseIdentifiedTxt);
         diseaseTypeTxt = findViewById(R.id.diseaseTypeTxt);
         categoryTxt = findViewById(R.id.categoryTxt);
+        recognitionValueTextView=(TextView) findViewById(R.id.model_confidence);
+
+        Intent intent =getIntent();
+
+        String DiseaseTitle=  intent.getStringExtra("Disease title");
+        String confidence=  intent.getStringExtra("confidence");
+        diseaseTypeTxt.setText("Disease Type is"+DiseaseTitle);
+        recognitionValueTextView.setText(confidence);
+
 
         //get the data from the previous activity
         //set vals
@@ -47,4 +62,6 @@ public class ResultActivity extends AppCompatActivity {
 
 
     }
+
+
 }

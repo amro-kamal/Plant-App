@@ -1,6 +1,8 @@
 package org.tensorflow.lite.examples.classification;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -28,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_CODE = 1;
     public Uri imageUri;
     public Bitmap bitmap;
+    private int STORAGE_PERMISSION_CODE = 1;
+
     File storageRootDir = Environment.getExternalStorageDirectory();
     GridView gallaryGrid;
     ArrayList<File> imagesList;
@@ -72,12 +78,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        if(ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//        if(ContextCompat.checkSelfPermission(MainActivity.this,
+//                Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED)
+//            ActivityCompat.requestPermissions(MainActivity.this,
+//                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "You have already granted this permission!",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            requestStoragePermission();
+        }
         //____________________________________________________________
 
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
@@ -126,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
             gAdapter = new GalleryItemAdaptor(images);
             // Set adapter on recycler view
             recyclerView.setAdapter(gAdapter);
+            Log.d("imagessize","images size is "+images.size());
+
         }
 
 
@@ -235,10 +250,13 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
+            Log.d("imageuri","image received");
 
             Intent intent = new Intent(this, ClassifyImageActivity.class);
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
+            Log.d("imageuri","image sending");
+
 
 
 
@@ -251,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ClassifierActivity.class);
         startActivity(intent);
     }
+
 
 
     public class GalleryItemAdaptor extends RecyclerView.Adapter<GalleryItemHolder> {
@@ -320,5 +339,46 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+
+
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because of this and that")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

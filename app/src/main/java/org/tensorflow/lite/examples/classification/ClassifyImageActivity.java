@@ -48,7 +48,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.classify_image_activity);
-        setHandler();
+//        setHandler();
 
         image= findViewById(R.id.image_container);
         classfyBtn=findViewById(R.id.classifyBtn);
@@ -81,16 +81,13 @@ public class ClassifyImageActivity extends AppCompatActivity {
         classfyBtn.setOnClickListener(v -> {
             //send the selected image to classifierActivity
             ClassifyImage();
+
         });
 
 
     }
 
-    protected synchronized void runInBackground(final Runnable r) {
-        if (handler != null) {
-            handler.post(r);
-        }
-    }
+
     private void createClassifier() {
         if (rgbFrameBitmap == null) {
             // Defer creation until we're getting camera frames.
@@ -98,20 +95,8 @@ public class ClassifyImageActivity extends AppCompatActivity {
         }
         final Classifier.Device device = Classifier.Device.CPU;
         final Classifier.Model model = clfModel;
-        runInBackground(() -> recreateClassifier(model, device, numThreads));
-
-    }
-
-    private synchronized void setHandler(){
-        handlerThread = new HandlerThread("inference");
-        handlerThread.start();
-        handler = new Handler(handlerThread.getLooper());
-    }
-    @Override
-    public synchronized void onResume() {
-        LOGGER.d("onResume " + this);
-        super.onResume();
-        setHandler();
+//        runInBackground(() -> recreateClassifier(model, device, numThreads));
+        recreateClassifier(model, device, numThreads);
 
     }
 
@@ -192,5 +177,59 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+    protected void ClassifyImage() {
+        // get image in the shape of  bitmap
+
+
+                        if (classifier != null) {
+
+                            final long startTime = SystemClock.uptimeMillis();
+                            final List<Classifier.Recognition> results =
+                                    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
+                            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+                            LOGGER.v("Detect: %s", results);
+
+                            Log.d("aaaaa","results of classifcation: "+results);
+
+                            SendResultToResultActivity(results);
+
+
+
+
+
+                    }
+
+    }
+
+    public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
+        Intent intent = new Intent(ClassifyImageActivity.this, ResultActivity.class);
+
+        if (results != null && results.size() >= 3) {
+            Classifier.Recognition recognition = results.get(0);
+            if (recognition != null) {
+                if (recognition.getTitle() != null) {
+                    intent.putExtra("Disease title", recognition.getTitle());
+                    Log.d("ClassifyImageSend","Put result,title");
+
+                }
+                if (recognition.getConfidence() != null) {
+                    Log.d("ClassifyImageSend","Put result,confidence");
+
+                    intent.putExtra("confidence", String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+                }
+
+            }
+        }
+
+        startActivity(intent);
+
+    }
+
+
+
 }
 
