@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.common.FirebaseMLException;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
+import com.google.firebase.ml.custom.FirebaseCustomLocalModel;
 import com.google.firebase.ml.custom.FirebaseCustomRemoteModel;
 import com.google.firebase.ml.custom.FirebaseModelDataType;
 import com.google.firebase.ml.custom.FirebaseModelInputOutputOptions;
@@ -44,6 +45,7 @@ import java.util.List;
 
 
 public class RemoteClassifierActivity extends AppCompatActivity {
+    FirebaseCustomLocalModel localModel;
     private Button classfyBtn;
     private ImageView image;
 
@@ -78,9 +80,10 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                         // the ML feature, or switch from the local model to the remote
                         // model, etc.
                         classfyBtn.setEnabled(true);
-                        Log.d("kkkk", "model downloaded successfullyyyyyyyyyyyyyyyyy");
-                        Toast.makeText(getApplicationContext(), "successfullyyyyyyyyyyyyyyyyy", Toast.LENGTH_LONG).show();
+                        classfyBtn.setText("Classify the disease");
 
+                        Log.d("kkkk", "model downloaaaaaaaaaaaaaded");
+                        Toast.makeText(getApplicationContext(), "model successfully downloaded", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -96,8 +99,14 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
         classfyBtn.setEnabled(false);
 
-
+        classfyBtn.setText("loading the model...");
         downloadModel();
+
+//         localModel = new FirebaseCustomLocalModel.Builder()
+//                .setAssetFilePath("mobilenet_v1_1.0_224.tflite")
+//                .build();
+//         Log.d("kkkk","localModel created");
+
        /* Bundle extras = getIntent().getExtras();
         String imgPath = extras.getString("ImagePath");
 
@@ -141,22 +150,21 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
 
 
-
-
-
     protected void ClassifyImage() throws FirebaseMLException {
         // get image in the shape of  bitmap
-
+        Log.d("kkkk","start classify Image Method");
 
 
         if (true) {
             float[][][][] input = bitmapToInputArray();
             FirebaseModelInputOutputOptions inputOutputOptions = createInputOutputOptions();
-
+            Log.d("kkkk","create InputOutputOptions");
             // [START mlkit_run_inference]
             FirebaseModelInputs inputs = new FirebaseModelInputs.Builder()
                     .add(input)  // add() as many input arrays as your model requires
                     .build();
+            Log.d("kkkk","create FirebaseModelInputs");
+
 
             FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
                     .addOnSuccessListener(new OnSuccessListener<Boolean>() {
@@ -258,6 +266,8 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
         return input;
     }
+
+
     public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
         Intent intent = new Intent(this, ResultActivity.class);
 
