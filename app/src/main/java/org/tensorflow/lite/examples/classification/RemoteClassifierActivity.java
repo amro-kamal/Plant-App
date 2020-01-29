@@ -56,7 +56,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
     private  FirebaseCustomRemoteModel remoteModel = null;
     private void downloadModel(){
          remoteModel =
-                new FirebaseCustomRemoteModel.Builder("remote_mobilenet_model").build();
+                new FirebaseCustomRemoteModel.Builder("remote_mobilenet_quant").build();
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
                 .requireWifi()
                 .build();
@@ -65,9 +65,22 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // Success.
+                        Log.d("kkkk", "download process stoppped");
+                        Toast.makeText(getApplicationContext(), "download task finished", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        FirebaseModelManager.getInstance().download(remoteModel, conditions)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void v) {
+                        // Download complete. Depending on your app, you could enable
+                        // the ML feature, or switch from the local model to the remote
+                        // model, etc.
                         classfyBtn.setEnabled(true);
-                        Log.d("kkkk", "model downloaaaaaaaaaaaaaded");
-                        Toast.makeText(getApplicationContext(), "model successfully downloaded", Toast.LENGTH_LONG).show();
+                        Log.d("kkkk", "model downloaded successfullyyyyyyyyyyyyyyyyy");
+                        Toast.makeText(getApplicationContext(), "successfullyyyyyyyyyyyyyyyyy", Toast.LENGTH_LONG).show();
+
                     }
                 });
     }
@@ -145,41 +158,66 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                     .add(input)  // add() as many input arrays as your model requires
                     .build();
 
-            FirebaseModelInterpreterOptions options =
-                    new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
-            FirebaseModelInterpreter firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
-            firebaseInterpreter.run(inputs, inputOutputOptions)
-                    .addOnSuccessListener(
-                            new OnSuccessListener<FirebaseModelOutputs>() {
-                                @Override
-                                public void onSuccess(FirebaseModelOutputs result) {
-                                    // ...
-                                    float[][] output = result.getOutput(0);
-                                    float[] probabilities = output[0];
-                                    BufferedReader reader = null;
-                                    try {
-                                        reader = new BufferedReader(
-                                                new InputStreamReader(getAssets().open("labels.txt")));
-                                        for (int i = 0; i < probabilities.length; i++) {
-                                            String label = reader.readLine();
-                                            Log.i("MLKit", String.format("%s: %1.4f", label, probabilities[i]));
-                                        }
+            FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
+                    .addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean isDownloaded) {
+                            FirebaseModelInterpreterOptions options;
+                            if (isDownloaded) {
+                                Log.d("kkkkk", "model yeeeeeesssssssssss downloaded");
 
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                options = new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
+
+                                FirebaseModelInterpreter firebaseInterpreter = null;
+                                try {
+                                    firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
+
+                                } catch (FirebaseMLException e) {
+                                    e.printStackTrace();
+                                    Log.d("kkkkk", "interperter went crazy: "+e.getMessage() );
 
                                 }
-                            })
-                    .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // Task failed with an exception
-                                    // ...
-                                    Log.d("kkkkkk", "faaaaaaaaaaaaaaaailed");
-                                }
-                            });
+                                firebaseInterpreter.run(inputs, inputOutputOptions)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<FirebaseModelOutputs>() {
+                                                    @Override
+                                                    public void onSuccess(FirebaseModelOutputs result) {
+                                                        // ...
+                                                        float[][] output = result.getOutput(0);
+                                                        float[] probabilities = output[0];
+                                                        BufferedReader reader = null;
+                                                        try {
+                                                            reader = new BufferedReader(
+                                                                    new InputStreamReader(getAssets().open("labels.txt")));
+                                                            for (int i = 0; i < probabilities.length; i++) {
+                                                                String label = reader.readLine();
+                                                                Log.i("MLKit", String.format("%s: %1.4f", label, probabilities[i]));
+                                                            }
+
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                    }
+                                                })
+                                        .addOnFailureListener(
+                                                new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Task failed with an exception
+                                                        // ...
+                                                        Log.d("xxxxx", "exception is : "+e.getMessage());
+                                                        Log.d("kkkkkk", "faaaaaaaaaaaaaaaailed");
+                                                    }
+                                                });
+
+                            } else {
+                                Log.d("kkkkk", "model not downloaded");
+                            }
+                            // ...
+                        }
+                    });
+
 
 
 
@@ -192,7 +230,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
         FirebaseModelInputOutputOptions inputOutputOptions =
                 new FirebaseModelInputOutputOptions.Builder()
                         .setInputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 224, 224, 3})
-                        .setOutputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 3})
+                        .setOutputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 1001})
                         .build();
         // [END mlkit_create_io_options]
 
