@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.classification.recyclerview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,7 @@ public class HistoryItemsAdaptor extends RecyclerView.Adapter<HistoryItemHolder>
         context = c;
     }
 
-    public HistoryItemsAdaptor(List<HistoryItem> historyItems) {
-    }
+
 
     @NonNull
     @Override

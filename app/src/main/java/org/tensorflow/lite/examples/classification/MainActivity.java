@@ -36,6 +36,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.tensorflow.lite.examples.classification.recyclerview.HistoryItemsAdaptor;
+import org.tensorflow.lite.examples.classification.utils.HistoryItem;
 import org.tensorflow.lite.examples.classification.utils.imageFolder;
 import org.tensorflow.lite.examples.classification.utils.pictureFacer;
 
@@ -47,28 +49,23 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_CODE = 1;
     public Uri imageUri;
-    public Bitmap bitmap;
     private int STORAGE_PERMISSION_CODE = 1;
 
-    File storageRootDir = Environment.getExternalStorageDirectory();
-    GridView gallaryGrid;
-    ArrayList<File> imagesList;
-
-    ArrayList<Bitmap> source;
 
     // Recycler View object
     RecyclerView recyclerView;
-
     // Layout Manager
     RecyclerView.LayoutManager RecyclerViewLayoutManager;
-
     // adapter class object
     GalleryItemAdaptor gAdapter;
-
     // Linear Layout Manager
     LinearLayoutManager HorizontalLayout;
+
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
+    RecyclerView historyRecycleView;
+    List<HistoryItem> historyItems ;
+    private HistoryItemsAdaptor historyItemsAdaptor;
 
 
     @Override
@@ -117,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(
                 RecyclerViewLayoutManager);
 
-
-
-
         // Set Horizontal Layout Manager
         // for Recycler view
         HorizontalLayout
@@ -129,18 +123,27 @@ public class MainActivity extends AppCompatActivity {
                 false);
         recyclerView.setLayoutManager(HorizontalLayout);
 
+        historyRecycleView
+                = findViewById(
+                R.id.historyRecycleView);
+        historyRecycleView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL, false));
+
+        addFakeItems();
 
         if (folds.size()==0) {
             recyclerView.setVisibility(View.GONE);
         } else {
-            ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
-            // calling constructor of adapter
-            // with source list as a parameter
+            ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(1).getPath());
             gAdapter = new GalleryItemAdaptor(images);
-            // Set adapter on recycler view
             recyclerView.setAdapter(gAdapter);
             Log.d("imagessize","images size is "+images.size());
+        }
 
+        if(historyItems.size()==0){
+            historyRecycleView.setVisibility(View.GONE);
+        }else{
+            historyItemsAdaptor = new HistoryItemsAdaptor(MainActivity.this, historyItems);
+            historyRecycleView.setAdapter(historyItemsAdaptor);
         }
 
 
@@ -161,6 +164,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void addFakeItems(){
+        historyItems = new ArrayList<>();
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.lion);
+        for(int i = 0; i<20;i++){
+
+
+            HistoryItem item = new HistoryItem("Leaf spot" , "Mon 11/8/20 8:48PM" ,bitmap);
+            historyItems.add(item);
+        }
+    }
 
     private ArrayList<imageFolder> getPicturePaths() {
         ArrayList<imageFolder> picFolders = new ArrayList<>();
@@ -174,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
                 cursor.moveToFirst();
             }
             do {
-                Log.d("aaaa", "started dooo");
                 imageFolder folds = new imageFolder();
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
                 String folder = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME));
@@ -208,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < picFolders.size(); i++) {
             Log.d("kkkkkkk", picFolders.get(i).getFolderName() + " and path = " + picFolders.get(i).getPath() + " " + picFolders.get(i).getNumberOfPics());
         }
-        Log.d("aaaa", "folders size is "+picFolders.size());
 
 
         return picFolders;
@@ -257,19 +269,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             Log.d("imageuri","image sending");
 
-
-
-
         }
     }
-
 
 
     public void openClasifierActivity() {
         Intent intent = new Intent(this, ClassifierActivity.class);
         startActivity(intent);
     }
-
 
 
     public class GalleryItemAdaptor extends RecyclerView.Adapter<GalleryItemHolder> {

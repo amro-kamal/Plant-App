@@ -21,7 +21,7 @@
         android:label="Plant"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".RemoteClassifierActivity"
+            android:name=".SplashActivity"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
