@@ -116,7 +116,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
         super.onPause();
     }
 
-
+/*
 
     protected void ClassifyImage() {
         // get image in the shape of  bitmap
@@ -151,7 +151,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
                     }
                 });
     }
-
+*/
     private void recreateClassifier(Classifier.Model model, Classifier.Device device, int numThreads) {
         if (classifier != null) {
             LOGGER.d("Closing classifier.");
