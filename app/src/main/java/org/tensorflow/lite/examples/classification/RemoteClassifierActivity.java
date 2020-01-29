@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.ml.common.FirebaseMLException;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
+import com.google.firebase.ml.custom.FirebaseCustomLocalModel;
 import com.google.firebase.ml.custom.FirebaseCustomRemoteModel;
 import com.google.firebase.ml.custom.FirebaseModelDataType;
 import com.google.firebase.ml.custom.FirebaseModelInputOutputOptions;
@@ -44,6 +45,7 @@ import java.util.List;
 
 
 public class RemoteClassifierActivity extends AppCompatActivity {
+    FirebaseCustomLocalModel localModel;
     private Button classfyBtn;
     private ImageView image;
 
@@ -66,6 +68,8 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         // Success.
                         classfyBtn.setEnabled(true);
+                        classfyBtn.setText("Classify the disease");
+
                         Log.d("kkkk", "model downloaaaaaaaaaaaaaded");
                         Toast.makeText(getApplicationContext(), "model successfully downloaded", Toast.LENGTH_LONG).show();
                     }
@@ -83,8 +87,14 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
         classfyBtn.setEnabled(false);
 
-
+        classfyBtn.setText("loading the model...");
         downloadModel();
+
+//         localModel = new FirebaseCustomLocalModel.Builder()
+//                .setAssetFilePath("mobilenet_v1_1.0_224.tflite")
+//                .build();
+//         Log.d("kkkk","localModel created");
+
        /* Bundle extras = getIntent().getExtras();
         String imgPath = extras.getString("ImagePath");
 
@@ -128,32 +138,35 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
 
 
-
-
-
     protected void ClassifyImage() throws FirebaseMLException {
         // get image in the shape of  bitmap
-
+        Log.d("kkkk","start classify Image Method");
 
 
         if (true) {
             float[][][][] input = bitmapToInputArray();
             FirebaseModelInputOutputOptions inputOutputOptions = createInputOutputOptions();
-
+            Log.d("kkkk","create InputOutputOptions");
             // [START mlkit_run_inference]
             FirebaseModelInputs inputs = new FirebaseModelInputs.Builder()
                     .add(input)  // add() as many input arrays as your model requires
                     .build();
+            Log.d("kkkk","create FirebaseModelInputs");
+
 
             FirebaseModelInterpreterOptions options =
                     new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
             FirebaseModelInterpreter firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
+
+            Log.d("kkkk","create firebaseInterpreter="+firebaseInterpreter);
+
             firebaseInterpreter.run(inputs, inputOutputOptions)
                     .addOnSuccessListener(
                             new OnSuccessListener<FirebaseModelOutputs>() {
                                 @Override
                                 public void onSuccess(FirebaseModelOutputs result) {
                                     // ...
+                                    Log.d("kkkk","firebaseInterpreter.run successed");
                                     float[][] output = result.getOutput(0);
                                     float[] probabilities = output[0];
                                     BufferedReader reader = null;
@@ -162,7 +175,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                                                 new InputStreamReader(getAssets().open("labels.txt")));
                                         for (int i = 0; i < probabilities.length; i++) {
                                             String label = reader.readLine();
-                                            Log.i("MLKit", String.format("%s: %1.4f", label, probabilities[i]));
+                                            Log.i("kkkk", String.format("%s: %1.4f", label, probabilities[i]));
                                         }
 
                                     } catch (IOException e) {
@@ -192,7 +205,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
         FirebaseModelInputOutputOptions inputOutputOptions =
                 new FirebaseModelInputOutputOptions.Builder()
                         .setInputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 224, 224, 3})
-                        .setOutputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 3})
+                        .setOutputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 1001})
                         .build();
         // [END mlkit_create_io_options]
 
@@ -220,6 +233,8 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
         return input;
     }
+
+
     public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
         Intent intent = new Intent(this, ResultActivity.class);
 

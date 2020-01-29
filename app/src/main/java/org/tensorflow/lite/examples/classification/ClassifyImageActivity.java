@@ -118,39 +118,39 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
 
 
-    protected void ClassifyImage() {
-        // get image in the shape of  bitmap
-        runInBackground(
-                new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (classifier != null) {
-
-                            final long startTime = SystemClock.uptimeMillis();
-                            final List<Classifier.Recognition> results =
-                                    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-                            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                            LOGGER.v("Detect: %s", results);
-
-                            runOnUiThread(
-                                    new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            //showResultsInBottomSheet(results);
-                                            Log.d("aaaaa","results of classifcation: "+results);
-                                            if(uriToSend!=null){
-                                                Intent in  = new Intent(getApplicationContext(), ResultActivity.class);
-                                                in.putExtra("ImageUri" ,uriToSend.toString() );
-                                                //pass results
-                                                startActivity(in);
-                                            }
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }
+//    protected void ClassifyImage() {
+//        // get image in the shape of  bitmap
+//        runInBackground(
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        if (classifier != null) {
+//
+//                            final long startTime = SystemClock.uptimeMillis();
+//                            final List<Classifier.Recognition> results =
+//                                    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
+//                            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+//                            LOGGER.v("Detect: %s", results);
+//
+//                            runOnUiThread(
+//                                    new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            //showResultsInBottomSheet(results);
+//                                            Log.d("aaaaa","results of classifcation: "+results);
+//                                            if(uriToSend!=null){
+//                                                Intent in  = new Intent(getApplicationContext(), ResultActivity.class);
+//                                                in.putExtra("ImageUri" ,uriToSend.toString() );
+//                                                //pass results
+//                                                startActivity(in);
+//                                            }
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                });
+//    }
 
     private void recreateClassifier(Classifier.Model model, Classifier.Device device, int numThreads) {
         if (classifier != null) {
