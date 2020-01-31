@@ -22,6 +22,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -30,6 +31,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity   {
     private static final int PICK_IMAGE_CODE = 1;
     public Uri imageUri;
     public Bitmap bitmap;
@@ -96,6 +98,21 @@ public class MainActivity extends AppCompatActivity {
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
         Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
 
+        Intent intent=getIntent();
+        int model_id=intent.getIntExtra("Model ID",-1);
+        String model_name="";
+        switch (model_id){
+            case 1: model_name="";
+            case 2: model_name="";
+            case 3: model_name="";
+            default:model_name="";
+        }
+        if(!model_name.equals("")){
+        RemoteClassifierActivity.downloadModel(model_name);
+        }
+        else{
+            Toast.makeText(this,"model Name Error",Toast.LENGTH_LONG).show();
+        }
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ClassifierActivity.class);
         startActivity(intent);
     }
+
 
 
 

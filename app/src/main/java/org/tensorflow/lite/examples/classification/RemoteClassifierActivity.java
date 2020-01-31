@@ -46,8 +46,8 @@ import java.util.List;
 
 public class RemoteClassifierActivity extends AppCompatActivity {
     FirebaseCustomLocalModel localModel;
-    private Button classfyBtn;
-    private ImageView image;
+    private static Button classfyBtn;
+    private static ImageView image;
 
 
     private Bitmap rgbFrameBitmap = null;
@@ -55,10 +55,10 @@ public class RemoteClassifierActivity extends AppCompatActivity {
 
     private Uri uriToSend= null;
 
-    private  FirebaseCustomRemoteModel remoteModel = null;
-    private void downloadModel(){
+    private  static FirebaseCustomRemoteModel remoteModel = null;
+    public static void downloadModel(String model_name){
          remoteModel =
-                new FirebaseCustomRemoteModel.Builder("remote_mobilenet_model").build();
+                new FirebaseCustomRemoteModel.Builder(model_name).build();
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
                 .requireWifi()
                 .build();
@@ -71,7 +71,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                         classfyBtn.setText("Classify the disease");
 
                         Log.d("kkkk", "model downloaaaaaaaaaaaaaded");
-                        Toast.makeText(getApplicationContext(), "model successfully downloaded", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(RemoteClassifierActivity.this, "model successfully downloaded", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -88,7 +88,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
         classfyBtn.setEnabled(false);
 
         classfyBtn.setText("loading the model...");
-        downloadModel();
+        downloadModel("remote_mobilenet_model");
 
 //         localModel = new FirebaseCustomLocalModel.Builder()
 //                .setAssetFilePath("mobilenet_v1_1.0_224.tflite")

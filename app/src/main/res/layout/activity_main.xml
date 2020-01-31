@@ -211,6 +211,7 @@
 
     </LinearLayout>
 </LinearLayout>
+
     <Button
         android:id="@+id/cameraBtn"
         android:layout_width="match_parent"

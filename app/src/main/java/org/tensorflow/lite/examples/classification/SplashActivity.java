@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
                 try {
                     sleep(3000);
 
-                    Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                    Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
                     startActivity(intent);
                     finish();
                     super.run();
