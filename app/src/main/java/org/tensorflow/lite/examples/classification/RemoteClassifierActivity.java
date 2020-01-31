@@ -58,7 +58,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
     private  static FirebaseCustomRemoteModel remoteModel = null;
     public static void downloadModel(String model_name){
          remoteModel =
-                new FirebaseCustomRemoteModel.Builder(model_name).build();
+                new FirebaseCustomRemoteModel.Builder("remote_mobilenet_quant").build();
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
                 .requireWifi()
                 .build();
@@ -67,6 +67,18 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // Success.
+                        Log.d("kkkk", "download process stoppped");
+                        Toast.makeText(getApplicationContext(), "download task finished", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        FirebaseModelManager.getInstance().download(remoteModel, conditions)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void v) {
+                        // Download complete. Depending on your app, you could enable
+                        // the ML feature, or switch from the local model to the remote
+                        // model, etc.
                         classfyBtn.setEnabled(true);
                         classfyBtn.setText("Classify the disease");
 
@@ -154,45 +166,66 @@ public class RemoteClassifierActivity extends AppCompatActivity {
             Log.d("kkkk","create FirebaseModelInputs");
 
 
-            FirebaseModelInterpreterOptions options =
-                    new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
-            FirebaseModelInterpreter firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
+            FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
+                    .addOnSuccessListener(new OnSuccessListener<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean isDownloaded) {
+                            FirebaseModelInterpreterOptions options;
+                            if (isDownloaded) {
+                                Log.d("kkkkk", "model yeeeeeesssssssssss downloaded");
 
-            Log.d("kkkk","create firebaseInterpreter="+firebaseInterpreter);
+                                options = new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
 
-            firebaseInterpreter.run(inputs, inputOutputOptions)
-                    .addOnSuccessListener(
-                            new OnSuccessListener<FirebaseModelOutputs>() {
-                                @Override
-                                public void onSuccess(FirebaseModelOutputs result) {
-                                    // ...
-                                    Log.d("kkkk","firebaseInterpreter.run successed");
-                                    float[][] output = result.getOutput(0);
-                                    float[] probabilities = output[0];
-                                    BufferedReader reader = null;
-                                    try {
-                                        reader = new BufferedReader(
-                                                new InputStreamReader(getAssets().open("labels.txt")));
-                                        for (int i = 0; i < probabilities.length; i++) {
-                                            String label = reader.readLine();
-                                            Log.i("kkkk", String.format("%s: %1.4f", label, probabilities[i]));
-                                        }
+                                FirebaseModelInterpreter firebaseInterpreter = null;
+                                try {
+                                    firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
 
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                } catch (FirebaseMLException e) {
+                                    e.printStackTrace();
+                                    Log.d("kkkkk", "interperter went crazy: "+e.getMessage() );
 
                                 }
-                            })
-                    .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // Task failed with an exception
-                                    // ...
-                                    Log.d("kkkkkk", "faaaaaaaaaaaaaaaailed");
-                                }
-                            });
+                                firebaseInterpreter.run(inputs, inputOutputOptions)
+                                        .addOnSuccessListener(
+                                                new OnSuccessListener<FirebaseModelOutputs>() {
+                                                    @Override
+                                                    public void onSuccess(FirebaseModelOutputs result) {
+                                                        // ...
+                                                        float[][] output = result.getOutput(0);
+                                                        float[] probabilities = output[0];
+                                                        BufferedReader reader = null;
+                                                        try {
+                                                            reader = new BufferedReader(
+                                                                    new InputStreamReader(getAssets().open("labels.txt")));
+                                                            for (int i = 0; i < probabilities.length; i++) {
+                                                                String label = reader.readLine();
+                                                                Log.i("MLKit", String.format("%s: %1.4f", label, probabilities[i]));
+                                                            }
+
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+                                                    }
+                                                })
+                                        .addOnFailureListener(
+                                                new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Task failed with an exception
+                                                        // ...
+                                                        Log.d("xxxxx", "exception is : "+e.getMessage());
+                                                        Log.d("kkkkkk", "faaaaaaaaaaaaaaaailed");
+                                                    }
+                                                });
+
+                            } else {
+                                Log.d("kkkkk", "model not downloaded");
+                            }
+                            // ...
+                        }
+                    });
+
 
 
 
