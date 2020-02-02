@@ -261,30 +261,14 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:id="@+id/history"
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/historyFragmentContainer"
+        class="org.tensorflow.lite.examples.classification.HistoryListFragment"
         app:layout_constraintTop_toBottomOf="@id/recyclerview"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/raven"
-        android:text="History"
-        android:textSize="20sp"
-        />
-    <!--Recycler View widget-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyRecycleView"
-        android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/history"
-        android:layout_marginTop="15dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

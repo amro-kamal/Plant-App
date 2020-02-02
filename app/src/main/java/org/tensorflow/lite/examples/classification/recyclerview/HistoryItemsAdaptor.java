@@ -24,6 +24,9 @@ public class HistoryItemsAdaptor extends RecyclerView.Adapter<HistoryItemHolder>
         context = c;
     }
 
+    public void setHistoryItems(List<HistoryItem> items){
+        hItems = items;
+    }
 
 
     @NonNull
