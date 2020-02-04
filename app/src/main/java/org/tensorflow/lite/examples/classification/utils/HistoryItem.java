@@ -5,15 +5,15 @@ import android.graphics.Bitmap;
 public class HistoryItem {
     private String title;
     private String date;
-    private Bitmap plantImg;
+    private String plantImgUrl;
 
     public HistoryItem(){
 
     }
-    public HistoryItem(String t , String d , Bitmap img){
+    public HistoryItem(String t , String d , String url){
         title = t;
         date = d;
-        plantImg = img;
+        plantImgUrl = url;
     }
     public String getTitle() {
         return title;
@@ -31,11 +31,12 @@ public class HistoryItem {
         this.date = date;
     }
 
-    public Bitmap getPlantImg() {
-        return plantImg;
+
+    public String getPlantImgUrl() {
+        return plantImgUrl;
     }
 
-    public void setPlantImg(Bitmap plantImg) {
-        this.plantImg = plantImg;
+    public void setPlantImgUrl(String plantImgUrl) {
+        this.plantImgUrl = plantImgUrl;
     }
 }

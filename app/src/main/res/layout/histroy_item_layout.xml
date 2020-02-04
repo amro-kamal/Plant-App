@@ -19,7 +19,6 @@
             android:layout_height="100dp"
             android:src="@drawable/lion"
             android:background="@color/white"
-            android:scaleType="centerCrop"
             />
         <TextView
             android:id="@+id/historyItemTitle"
