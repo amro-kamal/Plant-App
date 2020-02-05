@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.aseem.versatileprogressbar.ProgBar
+        android:id="@+id/myProgBar"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        app:barType="@drawable/gear_duo"
+        app:text=""
+        app:enlarge="5"
+        app:androidtextColor="@color/colorPrimary"/>
+
+</LinearLayout>

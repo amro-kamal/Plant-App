@@ -83,7 +83,7 @@ public class HistoryListFragment extends Fragment {
     private void fetchHistory(){
         String  REQUEST_TAG = "com.plantsapp.volleyJsonRequest.fetchhistory";
 
-        final String url = "http://10.0.2.2:4000/api/history";
+        final String url = NetworkingLab.END_POINT + "history";
         historyItems = new ArrayList<>();
         //Do something while loading
 
@@ -98,7 +98,7 @@ public class HistoryListFragment extends Fragment {
                                 HistoryItem item = new HistoryItem();
                                 item.setTitle(itemJsonObj.getString("title"));
                                 item.setDate(itemJsonObj.getString("date"));
-
+                                item.setDiseaseId(itemJsonObj.getString("disease_id"));
                                 JSONObject picObj = itemJsonObj.getJSONObject("pic");
                                 item.setPlantImgUrl(picObj.getString("imageData"));
 

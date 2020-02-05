@@ -6,6 +6,7 @@ public class HistoryItem {
     private String title;
     private String date;
     private String plantImgUrl;
+    private String diseaseId;
 
     public HistoryItem(){
 
@@ -38,5 +39,13 @@ public class HistoryItem {
 
     public void setPlantImgUrl(String plantImgUrl) {
         this.plantImgUrl = plantImgUrl;
+    }
+
+    public String getDiseaseId() {
+        return diseaseId;
+    }
+
+    public void setDiseaseId(String diseaseId) {
+        this.diseaseId = diseaseId;
     }
 }

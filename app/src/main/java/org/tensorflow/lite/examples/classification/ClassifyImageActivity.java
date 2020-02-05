@@ -171,7 +171,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
     }
 
     public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
-        Intent intent = new Intent(ClassifyImageActivity.this, ResultActivity.class);
+        Intent intent = new Intent(ClassifyImageActivity.this, ResultFragment.class);
 
         if (results != null && results.size() >= 3) {
             Classifier.Recognition recognition = results.get(0);
