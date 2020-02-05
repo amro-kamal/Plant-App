@@ -68,7 +68,7 @@ public class RemoteClassifierActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         // Success.
                         Log.d("kkkk", "download process stoppped");
-                        Toast.makeText(getApplicationContext(), "download task finished", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), "download task finished", Toast.LENGTH_LONG).show();
                     }
                 });
 

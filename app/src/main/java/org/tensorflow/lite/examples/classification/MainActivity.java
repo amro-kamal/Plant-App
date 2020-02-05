@@ -84,22 +84,27 @@ public class MainActivity extends AppCompatActivity   {
 
         Intent intent=getIntent();
         int model_id=intent.getIntExtra("Model ID",-1);
+        Log.d("kkkk","model id="+model_id);
+
         String model_name="";
         switch (model_id){
-            case 1: model_name="";
-            case 2: model_name="";
-            case 3: model_name="";
-            default:model_name="";
+            case 0: {model_name="tomatoes"; break;}
+            case 1:{ model_name="potatoes"; break;}
+            case 2: {model_name="t"; break;}
+            default:{model_name="empty";}
         }
-        if(!model_name.equals("")){
-        RemoteClassifierActivity.downloadModel(model_name);
-        }
-        else{
-            Toast.makeText(this,"model Name Error",Toast.LENGTH_LONG).show();
-        }
+//        if(!model_name.equals("")){
+//        RemoteClassifierActivity.downloadModel(model_name);
+//        }
+//        else{
+//            Toast.makeText(this,"model Name Error",Toast.LENGTH_LONG).show();
+//        }
+        Log.d("kkkk","model name ="+model_name);
 
         cameraBtn.setOnClickListener(v -> openClasifierActivity());
         ArrayList<imageFolder> folds = getPicturePaths();
+        Log.d("kkkk","getPicturePaths done");
+
 
         // initialisation with id's
         recyclerView = findViewById(R.id.recyclerview);
@@ -114,8 +119,12 @@ public class MainActivity extends AppCompatActivity   {
 
         if (folds.size()==0) {
             recyclerView.setVisibility(View.GONE);
+            Log.d("kkkk","folds.size()==0");
         } else {
+            Log.d("kkkk", "folds size="+folds.size());
             ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(1).getPath());
+            Log.d("kkkk", "getAllImagesByFolder done");
+
             gAdapter = new GalleryItemAdaptor(images);
             recyclerView.setAdapter(gAdapter);
             Log.d("imagessize","images size is "+images.size());
