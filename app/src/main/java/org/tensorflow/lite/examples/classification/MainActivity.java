@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,11 +55,8 @@ public class MainActivity extends AppCompatActivity   {
     public Uri imageUri;
     private int STORAGE_PERMISSION_CODE = 1;
 
-
     // Recycler View object
     RecyclerView recyclerView;
-    // Layout Manager
-    RecyclerView.LayoutManager RecyclerViewLayoutManager;
     // adapter class object
     GalleryItemAdaptor gAdapter;
     // Linear Layout Manager
@@ -65,24 +64,12 @@ public class MainActivity extends AppCompatActivity   {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    RecyclerView historyRecycleView;
-    List<HistoryItem> historyItems ;
-    private HistoryItemsAdaptor historyItemsAdaptor;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-//        if(ContextCompat.checkSelfPermission(MainActivity.this,
-//                Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED)
-//            ActivityCompat.requestPermissions(MainActivity.this,
-//                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(MainActivity.this, "You have already granted this permission!",
@@ -111,41 +98,19 @@ public class MainActivity extends AppCompatActivity   {
             Toast.makeText(this,"model Name Error",Toast.LENGTH_LONG).show();
         }
 
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openClasifierActivity();
-            }
-        });
+        cameraBtn.setOnClickListener(v -> openClasifierActivity());
         ArrayList<imageFolder> folds = getPicturePaths();
 
         // initialisation with id's
-        recyclerView
-                = findViewById(
-                R.id.recyclerview);
-        RecyclerViewLayoutManager
-                = new LinearLayoutManager(
-                getApplicationContext());
+        recyclerView = findViewById(R.id.recyclerview);
 
-        // Set LayoutManager on Recycler View
-        recyclerView.setLayoutManager(
-                RecyclerViewLayoutManager);
 
         // Set Horizontal Layout Manager
         // for Recycler view
-        HorizontalLayout
-                = new LinearLayoutManager(
-                MainActivity.this,
-                LinearLayoutManager.HORIZONTAL,
-                false);
+        HorizontalLayout = new LinearLayoutManager(MainActivity.this,
+                                                                LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(HorizontalLayout);
 
-        historyRecycleView
-                = findViewById(
-                R.id.historyRecycleView);
-        historyRecycleView.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL, false));
-
-        addFakeItems();
 
         if (folds.size()==0) {
             recyclerView.setVisibility(View.GONE);
@@ -156,42 +121,27 @@ public class MainActivity extends AppCompatActivity   {
             Log.d("imagessize","images size is "+images.size());
         }
 
-        if(historyItems.size()==0){
-            historyRecycleView.setVisibility(View.GONE);
-        }else{
-            historyItemsAdaptor = new HistoryItemsAdaptor(MainActivity.this, historyItems);
-            historyRecycleView.setAdapter(historyItemsAdaptor);
+       gallaryBtn.setOnClickListener(v -> {
+           //////open the gallary
+           Intent gallary_intent = new Intent();
+           gallary_intent.setType("image/*");
+           gallary_intent.setAction(Intent.ACTION_GET_CONTENT);
+           startActivityForResult(Intent.createChooser(gallary_intent, "select picture"), PICK_IMAGE_CODE);
+       });
+
+        //Histroyitems list Fragment
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.historyFragmentContainer);
+        if (fragment == null) {
+            fragment = HistoryListFragment.newInstance();
+            fm.beginTransaction()
+                    .add(R.id.historyFragmentContainer, fragment)
+                    .commit();
         }
-
-
-
-       gallaryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //////open the gallary
-                Intent gallary_intent = new Intent();
-                gallary_intent.setType("image/*");
-                gallary_intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(gallary_intent, "select picture"), PICK_IMAGE_CODE);
-
-
-            }
-        });
 
 
     }
 
-    private void addFakeItems(){
-        historyItems = new ArrayList<>();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.lion);
-        for(int i = 0; i<20;i++){
-
-
-            HistoryItem item = new HistoryItem("Leaf spot" , "Mon 11/8/20 8:48PM" ,bitmap);
-            historyItems.add(item);
-        }
-    }
 
     private ArrayList<imageFolder> getPicturePaths() {
         ArrayList<imageFolder> picFolders = new ArrayList<>();

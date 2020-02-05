@@ -24,6 +24,9 @@ public class HistoryItemsAdaptor extends RecyclerView.Adapter<HistoryItemHolder>
         context = c;
     }
 
+    public void setHistoryItems(List<HistoryItem> items){
+        hItems = items;
+    }
 
 
     @NonNull
@@ -32,7 +35,7 @@ public class HistoryItemsAdaptor extends RecyclerView.Adapter<HistoryItemHolder>
        View view=  LayoutInflater.from(context)
                 .inflate(R.layout.histroy_item_layout, parent, false);
 
-        return new HistoryItemHolder(view);
+        return new HistoryItemHolder(view , context);
     }
 
     @Override
