@@ -27,8 +27,9 @@ public class HistoryItemHolder extends RecyclerView.ViewHolder{
     private Button btn;
     private Context context;
     private String diseaseId;
+    private String confidence;
     private final String VOLLEY_TAG = "volleyyyyyy";
-    private String tempUrl = NetworkingLab.TEMP_URL+"uploads/1580391218673black_rot.jpg";
+    private String imgUrl;
 
     public HistoryItemHolder(@NonNull View itemView , Context c) {
         super(itemView);
@@ -41,10 +42,9 @@ public class HistoryItemHolder extends RecyclerView.ViewHolder{
 
             Intent in = new Intent(context , ResultActivity.class);
             in.putExtra("diseaseId",diseaseId );
+            in.putExtra("confidence",confidence );
             //send Image
-            File f = new File(tempUrl);
-            Uri uriToSend = Uri.fromFile(f);
-            in.putExtra("leafImg" ,uriToSend.toString() );
+            in.putExtra("leafImg" , imgUrl );
             context.startActivity(in);
         });
 
@@ -52,13 +52,16 @@ public class HistoryItemHolder extends RecyclerView.ViewHolder{
 
     public void bindItem(HistoryItem h){
         diseaseId = h.getDiseaseId();
+        confidence = h.getConfidence();
         titleTxt.setText(h.getTitle());
         dateTxt.setText(h.getDate());
 
-        //TODO:: change images url when server goes online
+        //TODO: change to Path reutrned from server and remove TEMP_URL
+        //imgUrl = h.getPlantImgUrl();
+        imgUrl = "uploads/"+h.getImgName();
+
         Glide.with(context)  //2
-                //.load(h.getPlantImgUrl()) //3
-                .load(tempUrl) //3
+                .load(NetworkingLab.TEMP_URL+imgUrl) //3
                 .centerCrop() //4
                 .placeholder(R.drawable.placeholder) //5
                 .error(R.drawable.broken_image) //6

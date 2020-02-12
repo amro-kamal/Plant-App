@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.tensorflow.lite.examples.classification.utils.Disease;
 
@@ -28,19 +29,20 @@ public class ResultFragment extends Fragment {
     private ImageView leafImg;
     private TextView diseaseIdentifiedTxt;
     private TextView diseaseTypeTxt;
-    private ImageView plantImg;
+    private ImageView diseaseImg;
+    private ImageView diseaseImg2;
     private TextView categoryTxt;
     private TextView confidenceTxtView;
     private TextView summaryTxt;
     private TextView symptomsTxt;
     private TextView treatmentTxt;
     private Disease disease;
-    private String leafImgStr;
+    private String leafImgUrl;
     private String confidence;
 
     public ResultFragment(Disease d ,String img , String conf) {
         disease  = d;
-        leafImgStr = img;
+        leafImgUrl = img;
         confidence = conf;
     }
 
@@ -55,7 +57,8 @@ public class ResultFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.classification_result_frag, container ,false);
         leafImg = v.findViewById(R.id.leafImg);
-        plantImg = v.findViewById(R.id.plantImage);
+        diseaseImg = v.findViewById(R.id.diseaseImage);
+        diseaseImg2 = v.findViewById(R.id.diseaseImage2);
         diseaseIdentifiedTxt = v.findViewById(R.id.diseaseIdentifiedTxt);
         diseaseTypeTxt = v.findViewById(R.id.diseaseTypeTxt);
         categoryTxt = v.findViewById(R.id.categoryTxt);
@@ -64,34 +67,47 @@ public class ResultFragment extends Fragment {
         treatmentTxt= v.findViewById(R.id.treatmentTxt);
         symptomsTxt= v.findViewById(R.id.symptomsTxt);
 
-        Uri uri = Uri.parse(leafImgStr);
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            bitmap = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.broken_image);
-        }
-        leafImg.setImageBitmap(bitmap);
 
+
+
+        confidence = confidence.substring(0,6);
+        float conf = 100 * Float.parseFloat(confidence);
         String plant = "Tomato"; //TODO:
-        diseaseIdentifiedTxt.setText("Disease identified in "+ plant +"Plant.");
+
+        diseaseIdentifiedTxt.setText("Disease identified in "+ plant +" Plant.");
         diseaseTypeTxt.setText(disease.getTitle());
         categoryTxt.setText(disease.getCategory());
-        confidenceTxtView.setText(confidence);
+        confidenceTxtView.setText("confidence "+ conf+ "%");
         summaryTxt.setText(disease.getSummary());
         symptomsTxt.setText(disease.getSymptoms());
         treatmentTxt.setText(disease.getTreatment());
 
         Glide.with(getActivity())  //2
-                //.load(h.getPlantImgUrl()) //3
-                .load(NetworkingLab.TEMP_URL + disease.getImageUrl()) //3
+                .load(NetworkingLab.TEMP_URL+leafImgUrl) //3
                 .centerCrop() //4
                 .placeholder(R.drawable.placeholder) //5
                 .error(R.drawable.broken_image) //6
                 .fallback(R.drawable.broken_image) //7
-                .into(plantImg); //8
+                .into(leafImg); //8
+
+        String diseaseImgUrl = NetworkingLab.TEMP_URL+disease.getImageUrl();
+        Glide.with(getActivity())  //2
+                .load(diseaseImgUrl)//3
+                .centerCrop() //4
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.placeholder) //5
+                .error(R.drawable.broken_image) //6
+                .fallback(R.drawable.broken_image) //7
+                .into(diseaseImg); //8
+
+        Glide.with(getActivity())  //2
+                .load(diseaseImgUrl)//3
+                .centerCrop() //4
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.placeholder) //5
+                .error(R.drawable.broken_image) //6
+                .fallback(R.drawable.broken_image) //7
+                .into(diseaseImg2); //8
 
 
 

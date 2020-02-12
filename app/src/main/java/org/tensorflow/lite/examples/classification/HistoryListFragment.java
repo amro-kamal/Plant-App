@@ -98,9 +98,11 @@ public class HistoryListFragment extends Fragment {
                                 HistoryItem item = new HistoryItem();
                                 item.setTitle(itemJsonObj.getString("title"));
                                 item.setDate(itemJsonObj.getString("date"));
+                                item.setConfidence(itemJsonObj.getString("confidence"));
                                 item.setDiseaseId(itemJsonObj.getString("disease_id"));
                                 JSONObject picObj = itemJsonObj.getJSONObject("pic");
                                 item.setPlantImgUrl(picObj.getString("imageData"));
+                                item.setImgName(picObj.getString("imageName"));
 
                                 historyItems.add(item);
                             }

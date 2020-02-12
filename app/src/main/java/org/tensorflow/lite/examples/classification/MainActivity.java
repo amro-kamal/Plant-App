@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity   {
             Log.d("kkkk","folds.size()==0");
         } else {
             Log.d("kkkk", "folds size="+folds.size());
-            ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(1).getPath());
+            ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
             Log.d("kkkk", "getAllImagesByFolder done");
 
             gAdapter = new GalleryItemAdaptor(images);

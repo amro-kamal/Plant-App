@@ -22,7 +22,7 @@
         android:icon="@drawable/plant_logo_large_removebg"
         android:label="Plants"
         tools:replace="android:label"
-
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".SplashActivity"

@@ -7,6 +7,8 @@ public class HistoryItem {
     private String date;
     private String plantImgUrl;
     private String diseaseId;
+    private String confidence;
+    private String imgName;
 
     public HistoryItem(){
 
@@ -47,5 +49,21 @@ public class HistoryItem {
 
     public void setDiseaseId(String diseaseId) {
         this.diseaseId = diseaseId;
+    }
+
+    public String getConfidence() {
+        return confidence;
+    }
+
+    public void setConfidence(String confidence) {
+        this.confidence = confidence;
+    }
+
+    public String getImgName() {
+        return imgName;
+    }
+
+    public void setImgName(String imgName) {
+        this.imgName = imgName;
     }
 }

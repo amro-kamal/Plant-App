@@ -10,6 +10,7 @@ import android.os.HandlerThread;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.aseem.versatileprogressbar.ProgBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,13 +50,13 @@ import java.util.Map;
 public class ClassifyImageActivity extends AppCompatActivity {
     private Button classfyBtn;
     private ImageView image;
+    private ProgBar progBar;
     private String TAG = "volleyyyyyyyImageClassifier";
 
 
     private Bitmap rgbFrameBitmap = null;
     private Uri uriToSend= null;
-    private String diseaseId ="";
-    private String confidence ="";
+
     private static final Logger LOGGER = new Logger();
 
     @Override
@@ -66,8 +68,8 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
         image= findViewById(R.id.image_container);
         classfyBtn=findViewById(R.id.classifyBtn);
-        Bitmap bitmap ;
-
+        progBar = findViewById(R.id.progBar);
+        Bitmap bitmap = null;
         Bundle extras = getIntent().getExtras();
         uriToSend = Uri.parse(extras.getString("imageUri"));
         try {
@@ -75,7 +77,7 @@ public class ClassifyImageActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-         bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.lion);
+        // bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.lion);
         image.setImageBitmap(bitmap);
 
         //set rgbFrameBitmap from Intent
@@ -95,23 +97,32 @@ public class ClassifyImageActivity extends AppCompatActivity {
     private void classifyImage(final Bitmap bitmap){
         final String url = NetworkingLab.END_POINT + "classify";
         String  REQUEST_TAG = "com.resultactivity.volleyStringRequest.classifyImage";
-
+        classfyBtn.setVisibility(View.INVISIBLE);
+        progBar.setVisibility(View.VISIBLE);
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
                 try {
-                    JSONObject resultObj = new JSONObject(resultResponse);
-                    diseaseId= resultObj.getString("diseaseId");
-                    confidence =resultObj.getString("confidence");
-                    Log.d(TAG , "result is "+resultObj);
+                    JSONObject res = new JSONObject(resultResponse);
+
+                    JSONObject resultObj = res.getJSONObject("result");
+                    String diseaseId= resultObj.getString("diseaseId");
+                    String confidence =resultObj.getString("confidence");
+
+                    String imagePath = res.getString("imagePath");
+                    String relPath = res.getString("relativePath");
+                    Log.d(TAG , "result is "+res);
 
                     // go to Result Activity
                     Intent in = new Intent(getBaseContext() , ResultActivity.class);
-                    in.putExtra("leafImg" ,uriToSend.toString());
+                    //in.putExtra("leafImg" ,imagePath);
+                    //TODO: in futre use imagePath for leafImg
+                    in.putExtra("leafImg" ,relPath);
                     in.putExtra("diseaseId" , diseaseId);
                     in.putExtra("confidence" , confidence);
                     startActivity(in);
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -121,12 +132,15 @@ public class ClassifyImageActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG , "error: "+error);
+                classfyBtn.setVisibility(View.VISIBLE);
+                progBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getBaseContext() , "Connection failed! Try Again." , Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
+               // params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
                 return params;
             }
 
@@ -147,6 +161,13 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
         NetworkingLab.getInstance(getApplicationContext()).addToRequestQueue(volleyMultipartRequest,REQUEST_TAG);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        classfyBtn.setVisibility(View.VISIBLE);
+        progBar.setVisibility(View.INVISIBLE);
     }
 
     public byte[] getFileDataFromDrawable(Bitmap bitmap) {
