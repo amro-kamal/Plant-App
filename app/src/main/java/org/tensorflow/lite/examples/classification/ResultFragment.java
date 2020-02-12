@@ -36,15 +36,16 @@ public class ResultFragment extends Fragment {
     private TextView treatmentTxt;
     private Disease disease;
     private String leafImgStr;
+    private String confidence;
 
-
-    public ResultFragment(Disease d ,String img) {
+    public ResultFragment(Disease d ,String img , String conf) {
         disease  = d;
         leafImgStr = img;
+        confidence = conf;
     }
 
-    public static ResultFragment newInstance(Disease disease , String leafImg){
-        return new ResultFragment(disease ,leafImg);
+    public static ResultFragment newInstance(Disease disease , String leafImg , String confidence){
+        return new ResultFragment(disease ,leafImg , confidence);
     }
 
     @Nullable
@@ -75,7 +76,6 @@ public class ResultFragment extends Fragment {
         leafImg.setImageBitmap(bitmap);
 
         String plant = "Tomato"; //TODO:
-        String confidence = "confidence 60%";
         diseaseIdentifiedTxt.setText("Disease identified in "+ plant +"Plant.");
         diseaseTypeTxt.setText(disease.getTitle());
         categoryTxt.setText(disease.getCategory());

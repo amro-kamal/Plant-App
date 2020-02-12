@@ -280,15 +280,18 @@ public class MainActivity extends AppCompatActivity   {
             if (picturesList != null) {
                 // Get car item dto in list.
                 pictureFacer image = picturesList.get(position);
-
+                String imagePath = image.getPicturePath();
                 if (image != null) {
                     Glide.with(getApplicationContext())
-                            .load(image.getPicturePath())
+                            .load(imagePath)
                             .apply(new RequestOptions().centerCrop())
                             .into(holder.getImageView());
                     holder.getImageView().setOnClickListener(v ->{
                         Intent in = new Intent(getApplicationContext() , ClassifyImageActivity.class);
-                        in.putExtra("ImagePath", image.getPicturePath());
+                        File f = new File(imagePath);
+                        String uriToSend = Uri.fromFile(f).toString();
+
+                        in.putExtra("imageUri", uriToSend);
                         startActivity(in);
                     });
 

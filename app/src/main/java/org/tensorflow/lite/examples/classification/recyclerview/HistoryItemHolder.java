@@ -45,7 +45,7 @@ public class HistoryItemHolder extends RecyclerView.ViewHolder{
             File f = new File(tempUrl);
             Uri uriToSend = Uri.fromFile(f);
             in.putExtra("leafImg" ,uriToSend.toString() );
-            c.startActivity(in);
+            context.startActivity(in);
         });
 
     }

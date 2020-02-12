@@ -16,32 +16,46 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
+import org.tensorflow.lite.examples.classification.utils.DataPart;
+import org.tensorflow.lite.examples.classification.utils.Disease;
+import org.tensorflow.lite.examples.classification.utils.VolleyMultipartRequest;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 public class ClassifyImageActivity extends AppCompatActivity {
     private Button classfyBtn;
     private ImageView image;
+    private String TAG = "volleyyyyyyyImageClassifier";
 
-    private Classifier.Model clfModel = Classifier.Model.QUANTIZED;
-    private int numThreads = 1;
-    private int sensorOrientation = 0;
-    private long lastProcessingTimeMs;
-    private Classifier classifier;
+
     private Bitmap rgbFrameBitmap = null;
-
-
-    private Handler handler;
-    private HandlerThread handlerThread;
     private Uri uriToSend= null;
-
-
+    private String diseaseId ="";
+    private String confidence ="";
     private static final Logger LOGGER = new Logger();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,35 +66,25 @@ public class ClassifyImageActivity extends AppCompatActivity {
 
         image= findViewById(R.id.image_container);
         classfyBtn=findViewById(R.id.classifyBtn);
+        Bitmap bitmap ;
+
         Bundle extras = getIntent().getExtras();
-        String imgPath = extras.getString("ImagePath");
-
-        Bitmap bitmap = null;
-        if(imgPath!=null){
-            bitmap = BitmapFactory.decodeFile(imgPath);
-            File f = new File(imgPath);
-            uriToSend = Uri.fromFile(f);
-        }else{
-            try {
-                Uri uri = Uri.parse(extras.getString("imageUri"));
-                uriToSend = uri;
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            } catch (IOException e) {
-                e.printStackTrace();
-
-            }
-
+        uriToSend = Uri.parse(extras.getString("imageUri"));
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriToSend);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+         bitmap = BitmapFactory.decodeResource(getResources() , R.drawable.lion);
         image.setImageBitmap(bitmap);
 
         //set rgbFrameBitmap from Intent
         rgbFrameBitmap = bitmap;
-        createClassifier();
-
 
         classfyBtn.setOnClickListener(v -> {
             //send the selected image to classifierActivity
-            ClassifyImage();
+
+            classifyImage(rgbFrameBitmap);
 
         });
 
@@ -88,111 +92,72 @@ public class ClassifyImageActivity extends AppCompatActivity {
     }
 
 
-    private void createClassifier() {
-        if (rgbFrameBitmap == null) {
-            // Defer creation until we're getting camera frames.
-            return;
-        }
-        final Classifier.Device device = Classifier.Device.CPU;
-        final Classifier.Model model = clfModel;
-//        runInBackground(() -> recreateClassifier(model, device, numThreads));
-        recreateClassifier(model, device, numThreads);
+    private void classifyImage(final Bitmap bitmap){
+        final String url = NetworkingLab.END_POINT + "classify";
+        String  REQUEST_TAG = "com.resultactivity.volleyStringRequest.classifyImage";
 
-    }
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse response) {
+                String resultResponse = new String(response.data);
+                try {
+                    JSONObject resultObj = new JSONObject(resultResponse);
+                    diseaseId= resultObj.getString("diseaseId");
+                    confidence =resultObj.getString("confidence");
+                    Log.d(TAG , "result is "+resultObj);
 
-    @Override
-    public synchronized void onPause() {
-        LOGGER.d("onPause " + this);
+                    // go to Result Activity
+                    Intent in = new Intent(getBaseContext() , ResultActivity.class);
+                    in.putExtra("leafImg" ,uriToSend.toString());
+                    in.putExtra("diseaseId" , diseaseId);
+                    in.putExtra("confidence" , confidence);
+                    startActivity(in);
 
-        handlerThread.quitSafely();
-        try {
-            handlerThread.join();
-            handlerThread = null;
-            handler = null;
-        } catch (final InterruptedException e) {
-            LOGGER.e(e, "Exception!");
-        }
-
-        super.onPause();
-    }
-
-
-    private void recreateClassifier(Classifier.Model model, Classifier.Device device, int numThreads) {
-        if (classifier != null) {
-            LOGGER.d("Closing classifier.");
-            classifier.close();
-            classifier = null;
-        }
-        if (device == Classifier.Device.GPU && model == Classifier.Model.QUANTIZED) {
-            LOGGER.d("Not creating classifier: GPU doesn't support quantized models.");
-            runOnUiThread(
-                    () -> {
-                        Toast.makeText(this, "GPU does not yet supported quantized models.", Toast.LENGTH_LONG)
-                                .show();
-                    });
-            return;
-        }
-        try {
-            LOGGER.d(
-                    "Creating classifier (model=%s, device=%s, numThreads=%d)", model, device, numThreads);
-            classifier = Classifier.create(this, model, device, numThreads);
-        } catch (IOException e) {
-            LOGGER.e(e, "Failed to create classifier.");
-        }
-
-
-    }
-
-
-
-
-    protected void ClassifyImage() {
-        // get image in the shape of  bitmap
-
-
-                        if (classifier != null) {
-
-                            final long startTime = SystemClock.uptimeMillis();
-                            final List<Classifier.Recognition> results =
-                                    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-                            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                            LOGGER.v("Detect: %s", results);
-
-                            Log.d("aaaaa","results of classifcation: "+results);
-
-                            SendResultToResultActivity(results);
-
-
-
-
-
-                    }
-
-    }
-
-    public void  SendResultToResultActivity(List<Classifier.Recognition> results) {
-        Intent intent = new Intent(ClassifyImageActivity.this, ResultFragment.class);
-
-        if (results != null && results.size() >= 3) {
-            Classifier.Recognition recognition = results.get(0);
-            if (recognition != null) {
-                if (recognition.getTitle() != null) {
-                    intent.putExtra("Disease title", recognition.getTitle());
-                    Log.d("ClassifyImageSend","Put result,title");
-
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                if (recognition.getConfidence() != null) {
-                    Log.d("ClassifyImageSend","Put result,confidence");
-
-                    intent.putExtra("confidence", String.format("%.2f", (100 * recognition.getConfidence())) + "%");
-                }
-
             }
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG , "error: "+error);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
+                return params;
+            }
 
-        startActivity(intent);
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                // file name could found file base or direct access from real path
+                // for now just get bitmap data from ImageView
+                //TODO: change to name "plant-name_leaf"
+                params.put("imageData", new DataPart("leaf_image.jpg", getFileDataFromDrawable(bitmap), "image/jpeg"));
+
+                return params;
+            }
+        };
+
+
+
+
+        NetworkingLab.getInstance(getApplicationContext()).addToRequestQueue(volleyMultipartRequest,REQUEST_TAG);
 
     }
+
+    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+
+
+
+
 
 
 

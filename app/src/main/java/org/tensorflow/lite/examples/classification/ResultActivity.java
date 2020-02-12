@@ -24,14 +24,17 @@ public class ResultActivity extends AppCompatActivity {
     private Fragment fragment;
     private String TAG = "volleyyyyyyy";
     private String leafImg;
+    private String confidence = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.classification_result_act);
 
-        String diseaseId = getIntent().getStringExtra("diseaseId");
         leafImg = getIntent().getStringExtra("leafImg");
+        confidence = getIntent().getStringExtra("confidence");
+
+        String diseaseId = getIntent().getStringExtra("diseaseId");
         getDiseaseInfo(diseaseId);
 
 
@@ -52,7 +55,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private void replaceFragment(Disease disease){
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-        fragment = ResultFragment.newInstance(disease , leafImg);
+        fragment = ResultFragment.newInstance(disease , leafImg , confidence);
         transaction2.replace(R.id.resultFragmentContainer, fragment);
         transaction2.commit();
     }
