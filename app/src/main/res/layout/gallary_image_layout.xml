@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/gallaryImageItem"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:src="@drawable/lion"
         android:background="@color/white"
         android:scaleType="centerCrop"

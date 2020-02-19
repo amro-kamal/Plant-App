@@ -8,6 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import org.tensorflow.lite.examples.classification.utils.MyPreferences;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -25,10 +27,19 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run(){
                 try {
-                    sleep(3000);
+                    sleep(2000);
 
-                    Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
-                    startActivity(intent);
+
+                    boolean isFirstTime = MyPreferences.isFirstSelection(SplashActivity.this);
+                    if (isFirstTime) {
+                        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
+                        startActivity(intent);                    }
+                    else{
+                        Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
+
+
                     finish();
                     super.run();
                 } catch (InterruptedException e) {

@@ -16,7 +16,8 @@ public class NetworkingLab {
     private static Context mContext;
 
     public static final String END_POINT = "http://10.0.2.2:4000/api/";
-    public static final String TEMP_URL = "http://192.168.43.16:4000/";
+//    public static final String TEMP_URL = "http://192.168.43.16:4000/";
+    public static final String TEMP_URL = "http://192.168.56.1:4000/";
 
 
     private NetworkingLab(Context context) {

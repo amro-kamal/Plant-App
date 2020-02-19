@@ -2,7 +2,9 @@ package org.tensorflow.lite.examples.classification;
 
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.util.Pair;
@@ -36,11 +38,15 @@ import com.nightonke.boommenu.Util;
 
 import com.nightonke.boommenu.BoomMenuButton;
 
+import org.tensorflow.lite.examples.classification.utils.MyPreferences;
+
 public class modelSelectionActivity extends AppCompatActivity {
     BoomMenuButton bmb ;
     RelativeLayout selectBtn;
     TextView wellcome_tv;
     private Intent intent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +57,7 @@ public class modelSelectionActivity extends AppCompatActivity {
         wellcome_tv=(TextView) findViewById(R.id.wellcome);
         bmb = (BoomMenuButton) findViewById(R.id.bmb1);
         // Use OnBoomListenerAdapter to listen part of methods
-        bmb.setOnBoomListener(new OnBoomListenerAdapter() {
-            @Override
-            public void onBackgroundClick() {
-                super.onBoomWillHide();
-                selectBtn.setVisibility(View.VISIBLE);
-                wellcome_tv.setVisibility(View.VISIBLE);
-            }
-        });
+
         initializeBmb1();
 
 
@@ -91,8 +90,17 @@ public class modelSelectionActivity extends AppCompatActivity {
                         @Override
                         public void onBoomButtonClick(int index) {
 //                            Toast.makeText(modelSelectionActivity.this, " boom-button No." + index +" is clicked!",Toast.LENGTH_LONG).show();
+                            //save the selected model as an app preference
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putInt(MyPreferences.MODEL_ID, index); // Storing model_id
+                            editor.commit();
+//                            Log.d("kkkk","model id is saved to pref ="+index);
+
+//                            Toast.makeText(modelSelectionActivity.this, " model id was saved to app preferences",Toast.LENGTH_LONG).show();
+
                             intent=new Intent(modelSelectionActivity.this,MainActivity.class);
-                            intent.putExtra("Model ID",index);
+//                            intent.putExtra("Model ID",index);
                             startActivity(intent);
 
                         }

@@ -14,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,19 +32,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.nightonke.boommenu.BoomButtons.HamButton;
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
+import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.ButtonEnum;
+import com.nightonke.boommenu.OnBoomListenerAdapter;
 
 import org.tensorflow.lite.examples.classification.recyclerview.HistoryItemsAdaptor;
 import org.tensorflow.lite.examples.classification.utils.HistoryItem;
+import org.tensorflow.lite.examples.classification.utils.MyPreferences;
 import org.tensorflow.lite.examples.classification.utils.imageFolder;
 import org.tensorflow.lite.examples.classification.utils.pictureFacer;
 
@@ -54,6 +66,11 @@ public class MainActivity extends AppCompatActivity   {
     private static final int PICK_IMAGE_CODE = 1;
     public Uri imageUri;
     private int STORAGE_PERMISSION_CODE = 1;
+    BoomMenuButton bmb;
+    public static  Boolean on_off_line;
+    int model_id;
+    String model_name="";
+    LinearLayout modelBtn;
 
     // Recycler View object
     RecyclerView recyclerView;
@@ -79,27 +96,47 @@ public class MainActivity extends AppCompatActivity   {
         }
         //____________________________________________________________
 
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+//        editor.putInt(MyPreferences.MODEL_ID, 8); // Storing model_id
+
+        model_id=pref.getInt(MyPreferences.MODEL_ID, -1); // getting Integer
+        Toast.makeText(this,"model id loaded from preferences",Toast.LENGTH_LONG).show();
+        Log.d("kkkk","loaded model id="+model_id);
+
+
+        modelBtn=(LinearLayout) findViewById(R.id.model_btn);
+        switch (model_id){
+            case 0: {model_name="tomatoes";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+            case 1:{ model_name="potatoes";modelBtn.setBackgroundResource(R.drawable.potato); break;}
+            case 2: {model_name="t";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+            case -1: {model_name="t";modelBtn.setBackgroundResource(R.drawable.potato); break;}
+            default:{model_name="empty";}
+        }
+        Log.d("kkkk","model id="+model_id);
+
+        bmb = (BoomMenuButton) findViewById(R.id.bmb5);
+        initializeBmb1();
+        modelBtn.setOnClickListener(v ->{
+            bmb.boom();
+        });
+
+
+
+        Log.d("kkkk","model name ="+model_name);
+
+        Switch modeSwitch = (Switch) findViewById(R.id.mode_switch);
+        on_off_line=modeSwitch.isChecked();
+        if(on_off_line){
+
+        }else{
+
+        }
+
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
         Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
 
-        Intent intent=getIntent();
-        int model_id=intent.getIntExtra("Model ID",-1);
-        Log.d("kkkk","model id="+model_id);
 
-        String model_name="";
-        switch (model_id){
-            case 0: {model_name="tomatoes"; break;}
-            case 1:{ model_name="potatoes"; break;}
-            case 2: {model_name="t"; break;}
-            default:{model_name="empty";}
-        }
-//        if(!model_name.equals("")){
-//        RemoteClassifierActivity.downloadModel(model_name);
-//        }
-//        else{
-//            Toast.makeText(this,"model Name Error",Toast.LENGTH_LONG).show();
-//        }
-        Log.d("kkkk","model name ="+model_name);
 
         cameraBtn.setOnClickListener(v -> openClasifierActivity());
         ArrayList<imageFolder> folds = getPicturePaths();
@@ -367,4 +404,48 @@ public class MainActivity extends AppCompatActivity   {
             }
         }
     }
+
+
+    SimpleCircleButton.Builder getSimpleCircleButtonBuilder(int imgRes) {
+        String dark_green="#13ad69";
+        return new SimpleCircleButton.Builder()
+                .normalImageRes(imgRes)
+                .normalColor(Color.parseColor(dark_green))
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        model_id=index;
+                        Toast.makeText(MainActivity.this, " boom-button No." + index +" is clicked!",Toast.LENGTH_LONG).show();
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putInt(MyPreferences.MODEL_ID, model_id); // Storing model_id
+                        editor.commit();
+                        Toast.makeText(MainActivity.this, " model id was saved to app preferences",Toast.LENGTH_LONG).show();
+                        switch (model_id){
+                            case 0: {model_name="tomatoes";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+                            case 1:{ model_name="potatoes";modelBtn.setBackgroundResource(R.drawable.potato); break;}
+                            case 2: {model_name="t";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+                            case -1: {model_name="t";modelBtn.setBackgroundResource(R.drawable.potato); break;}
+                            default:{model_name="empty";}
+                        }
+                        Log.d("kkkk","model id="+model_id);
+
+
+                    }
+                });
+    }
+    private void initializeBmb1() {
+
+        SimpleCircleButton.Builder scb1=getSimpleCircleButtonBuilder(R.drawable.tomato);
+        bmb.addBuilder(scb1);
+        SimpleCircleButton.Builder scb2=getSimpleCircleButtonBuilder(R.drawable.potato);
+        bmb.addBuilder(scb2);
+        SimpleCircleButton.Builder scb3=getSimpleCircleButtonBuilder(R.drawable.tomato);
+        bmb.addBuilder(scb3);
+        SimpleCircleButton.Builder scb4=getSimpleCircleButtonBuilder(R.drawable.potato);
+        bmb.addBuilder(scb4);
+
+
+    }
+
 }
