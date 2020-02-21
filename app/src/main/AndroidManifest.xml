@@ -35,7 +35,7 @@
         </activity>
         <activity android:name=".modelSelectionActivity"></activity>
         <activity
-            android:name=".ClassifyImageActivity"
+            android:name=".OnlineClassifierActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity" />
         <activity
