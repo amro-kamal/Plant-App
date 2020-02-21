@@ -89,12 +89,10 @@ public class MainActivity extends AppCompatActivity   {
 
         bmb = (BoomMenuButton) findViewById(R.id.bmb5);
         initializeBmb1();
-        modelBtn.setOnClickListener(v ->{
-            bmb.boom();
-        });
+        modelBtn.setOnClickListener(v -> bmb.boom());
 
-
-        Switch modeSwitch = (Switch) findViewById(R.id.mode_switch);
+        //TODO: read preference , set val in singleton , add listener
+        Switch modeSwitch =  findViewById(R.id.mode_switch);
         on_off_line=modeSwitch.isChecked();
         if(on_off_line){
             ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);

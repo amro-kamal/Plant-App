@@ -72,7 +72,7 @@ public class ResultFragment extends Fragment {
 
         confidence = confidence.substring(0,6);
         float conf = 100 * Float.parseFloat(confidence);
-        String plant = "Tomato"; //TODO:
+        String plant = ModelSingleton.getInstance(getActivity()).getCurrentModel();
 
         diseaseIdentifiedTxt.setText("Disease identified in "+ plant +" Plant.");
         diseaseTypeTxt.setText(disease.getTitle());
