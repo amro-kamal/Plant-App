@@ -20,9 +20,6 @@ public class ResultLoadingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
              super.onCreateView(inflater, container, savedInstanceState);
-             View view = inflater.inflate(R.layout.classification_result_loading_frag , container, false);
-
-
-             return  view;
+             return  inflater.inflate(R.layout.classification_result_loading_frag , container, false);
     }
 }

@@ -17,48 +17,31 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.nightonke.boommenu.BoomButtons.HamButton;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
-import com.nightonke.boommenu.ButtonEnum;
-import com.nightonke.boommenu.OnBoomListenerAdapter;
 
-import org.tensorflow.lite.examples.classification.recyclerview.HistoryItemsAdaptor;
-import org.tensorflow.lite.examples.classification.utils.HistoryItem;
 import org.tensorflow.lite.examples.classification.utils.MyPreferences;
 import org.tensorflow.lite.examples.classification.utils.imageFolder;
 import org.tensorflow.lite.examples.classification.utils.pictureFacer;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +52,6 @@ public class MainActivity extends AppCompatActivity   {
     BoomMenuButton bmb;
     public static  Boolean on_off_line;
     int model_id;
-    String model_name="";
     LinearLayout modelBtn;
 
     // Recycler View object
@@ -98,39 +80,24 @@ public class MainActivity extends AppCompatActivity   {
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
-//        editor.putInt(MyPreferences.MODEL_ID, 8); // Storing model_id
 
         model_id=pref.getInt(MyPreferences.MODEL_ID, -1); // getting Integer
-        Toast.makeText(this,"model id loaded from preferences",Toast.LENGTH_LONG).show();
         Log.d("kkkk","loaded model id="+model_id);
+        modelBtn= findViewById(R.id.model_btn);
+        setCurrentModel(model_id);
 
-
-        modelBtn=(LinearLayout) findViewById(R.id.model_btn);
-        switch (model_id){
-            case 0: {model_name="tomatoes";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
-            case 1:{ model_name="potatoes";modelBtn.setBackgroundResource(R.drawable.potato); break;}
-            case 2: {model_name="t";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
-            case -1: {model_name="t";modelBtn.setBackgroundResource(R.drawable.potato); break;}
-            default:{model_name="empty";}
-        }
-        Log.d("kkkk","model id="+model_id);
 
         bmb = (BoomMenuButton) findViewById(R.id.bmb5);
         initializeBmb1();
-        modelBtn.setOnClickListener(v ->{
-            bmb.boom();
-        });
+        modelBtn.setOnClickListener(v -> bmb.boom());
 
-
-
-        Log.d("kkkk","model name ="+model_name);
-
-        Switch modeSwitch = (Switch) findViewById(R.id.mode_switch);
+        //TODO: read preference , set val in singleton , add listener
+        Switch modeSwitch =  findViewById(R.id.mode_switch);
         on_off_line=modeSwitch.isChecked();
         if(on_off_line){
-
+            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
         }else{
-
+            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
         }
 
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
@@ -145,8 +112,6 @@ public class MainActivity extends AppCompatActivity   {
 
         // initialisation with id's
         recyclerView = findViewById(R.id.recyclerview);
-
-
         // Set Horizontal Layout Manager
         // for Recycler view
         HorizontalLayout = new LinearLayoutManager(MainActivity.this,
@@ -186,6 +151,26 @@ public class MainActivity extends AppCompatActivity   {
         }
 
 
+    }
+
+    private void setCurrentModel(int model_id){
+        switch (model_id){
+            case 0: {
+                ModelSingleton.getInstance(getApplicationContext()).setCurrentModel(ModelSingleton.TOMATO_MODEL);
+                modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+            case 1:{
+                ModelSingleton.getInstance(getApplicationContext()).setCurrentModel(ModelSingleton.POTATO_MODEL);
+                modelBtn.setBackgroundResource(R.drawable.potato); break;}
+            case 2: {
+                ModelSingleton.getInstance(getApplicationContext()).setCurrentModel(ModelSingleton.GRAPE_MODEL);
+                modelBtn.setBackgroundResource(R.drawable.tomato); break;}
+            case -1: {
+                ModelSingleton.getInstance(getApplicationContext()).setCurrentModel("t");
+                modelBtn.setBackgroundResource(R.drawable.potato); break;}
+            default:{
+                ModelSingleton.getInstance(getApplicationContext()).setCurrentModel(ModelSingleton.TOMATO_MODEL);
+            }
+        }
     }
 
 
@@ -277,7 +262,7 @@ public class MainActivity extends AppCompatActivity   {
             imageUri = data.getData();
             Log.d("imageuri","image received");
 
-            Intent intent = new Intent(this, ClassifyImageActivity.class);
+            Intent intent = new Intent(this, OnlineClassifierActivity.class);
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
             Log.d("imageuri","image sending");
@@ -324,7 +309,7 @@ public class MainActivity extends AppCompatActivity   {
                             .apply(new RequestOptions().centerCrop())
                             .into(holder.getImageView());
                     holder.getImageView().setOnClickListener(v ->{
-                        Intent in = new Intent(getApplicationContext() , ClassifyImageActivity.class);
+                        Intent in = new Intent(getApplicationContext() , OnlineClassifierActivity.class);
                         File f = new File(imagePath);
                         String uriToSend = Uri.fromFile(f).toString();
 
@@ -415,21 +400,13 @@ public class MainActivity extends AppCompatActivity   {
                     @Override
                     public void onBoomButtonClick(int index) {
                         model_id=index;
-                        Toast.makeText(MainActivity.this, " boom-button No." + index +" is clicked!",Toast.LENGTH_LONG).show();
                         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
                         SharedPreferences.Editor editor = pref.edit();
                         editor.putInt(MyPreferences.MODEL_ID, model_id); // Storing model_id
                         editor.commit();
                         Toast.makeText(MainActivity.this, " model id was saved to app preferences",Toast.LENGTH_LONG).show();
-                        switch (model_id){
-                            case 0: {model_name="tomatoes";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
-                            case 1:{ model_name="potatoes";modelBtn.setBackgroundResource(R.drawable.potato); break;}
-                            case 2: {model_name="t";modelBtn.setBackgroundResource(R.drawable.tomato); break;}
-                            case -1: {model_name="t";modelBtn.setBackgroundResource(R.drawable.potato); break;}
-                            default:{model_name="empty";}
-                        }
+                        setCurrentModel(model_id); // setSingletonVal
                         Log.d("kkkk","model id="+model_id);
-
 
                     }
                 });
@@ -444,7 +421,6 @@ public class MainActivity extends AppCompatActivity   {
         bmb.addBuilder(scb3);
         SimpleCircleButton.Builder scb4=getSimpleCircleButtonBuilder(R.drawable.potato);
         bmb.addBuilder(scb4);
-
 
     }
 
