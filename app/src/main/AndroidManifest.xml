@@ -18,29 +18,27 @@
 
     <application
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@drawable/plant_logo_large_removebg"
         android:label="Plants"
-        tools:replace="android:label"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".SplashActivity"
-           >
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:label">
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".LogInActivity" />
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".modelSelectionActivity"></activity>
+        <activity android:name=".modelSelectionActivity" />
         <activity
             android:name=".ClassifyImageActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity" />
-        <activity
-            android:name=".ResultActivity"
-            />
+        <activity android:name=".ResultActivity" />
         <activity
             android:name=".ClassifierActivity"
             android:label="@string/activity_name_classification"
