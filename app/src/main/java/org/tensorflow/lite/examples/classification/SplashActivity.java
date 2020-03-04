@@ -30,14 +30,14 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(2000);
 
 
-//                    boolean isFirstTime = MyPreferences.isFirstSelection(SplashActivity.this);
-//                    if (isFirstTime) {
-//                        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
-//                        startActivity(intent);                    }
-//                    else{
-                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
-                        startActivity(intent);
-//                    }
+                    boolean isFirstTime = MyPreferences.isFirstSelection(SplashActivity.this);
+                    if (isFirstTime) {
+                        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
+                        startActivity(intent);                    }
+                    else{
+                      //  Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
+                       // startActivity(intent);
+                    }
 
 
                     finish();

@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity   {
     private int STORAGE_PERMISSION_CODE = 1;
     BoomMenuButton bmb;
     public static  Boolean on_off_line;
+    private Switch modeSwitch;
     int model_id;
     LinearLayout modelBtn;
 
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity   {
         }
         //____________________________________________________________
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(MyPreferences.MY_PREFERENCES, 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
 
         model_id=pref.getInt(MyPreferences.MODEL_ID, -1); // getting Integer
@@ -91,14 +93,14 @@ public class MainActivity extends AppCompatActivity   {
         initializeBmb1();
         modelBtn.setOnClickListener(v -> bmb.boom());
 
-        //TODO: read preference , set val in singleton , add listener
-        Switch modeSwitch =  findViewById(R.id.mode_switch);
-        on_off_line=modeSwitch.isChecked();
-        if(on_off_line){
-            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
-        }else{
-            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
-        }
+        // read preference , set val in singleton
+        boolean isOnline = MyPreferences.getModelOpMode(this);
+        modeSwitch =  findViewById(R.id.mode_switch);
+        modeSwitch.setChecked(isOnline);
+        modeSwitch.setTextOff("offline");
+        modeSwitch.setTextOn("online");
+        Log.d("kkkk","model isssssssss ="+isOnline);
+        ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
         Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
@@ -149,6 +151,18 @@ public class MainActivity extends AppCompatActivity   {
                     .add(R.id.historyFragmentContainer, fragment)
                     .commit();
         }
+
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked){
+                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
+                }else{
+                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
+                }
+            }
+        });
 
 
     }
@@ -261,8 +275,12 @@ public class MainActivity extends AppCompatActivity   {
         if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
             Log.d("imageuri","image received");
-
-            Intent intent = new Intent(this, OnlineClassifierActivity.class);
+            Intent intent;
+            if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
+                intent = new Intent(this , OnlineClassifierActivity.class);
+            }else{
+                intent = new Intent(this , OfflineClassifierActivity.class);
+            }
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
             Log.d("imageuri","image sending");
@@ -309,7 +327,14 @@ public class MainActivity extends AppCompatActivity   {
                             .apply(new RequestOptions().centerCrop())
                             .into(holder.getImageView());
                     holder.getImageView().setOnClickListener(v ->{
-                        Intent in = new Intent(getApplicationContext() , OnlineClassifierActivity.class);
+
+                        Intent in;
+                        if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
+                            in = new Intent(getApplicationContext() , OnlineClassifierActivity.class);
+                        }else{
+                            in = new Intent(getApplicationContext() , OfflineClassifierActivity.class);
+                        }
+
                         File f = new File(imagePath);
                         String uriToSend = Uri.fromFile(f).toString();
 

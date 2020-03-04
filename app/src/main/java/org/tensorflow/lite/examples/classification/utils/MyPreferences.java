@@ -9,19 +9,21 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MyPreferences  {
 
 
-        private static final String MY_PREFERENCES = "my_preferences";
+        public static final String MY_PREFERENCES = "my_preferences";
         public static final String MODEL_ID = "model_id";
 
     private static final String IS_ONLINE = "IS_ONLINE";
 
-    public static String getModelOpMode(Context context) {
+
+
+    public static boolean getModelOpMode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(IS_ONLINE, null);
+                .getBoolean(IS_ONLINE, false);
     }
-    public static void setModelOpMode(Context context,String is_online) {
+    public static void setModelOpMode(Context context,boolean is_online) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(IS_ONLINE, is_online)
+                .putBoolean(IS_ONLINE, is_online)
                 .apply();
     }
 
