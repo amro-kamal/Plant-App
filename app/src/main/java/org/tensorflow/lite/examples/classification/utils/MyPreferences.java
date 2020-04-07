@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MyPreferences  {
 
 
-        private static final String MY_PREFERENCES = "MyPref";
+        public static final String MY_PREFERENCES = "MyPref";
         public static final String MODEL_ID = "model_id";
 
     private static final String IS_ONLINE = "";
