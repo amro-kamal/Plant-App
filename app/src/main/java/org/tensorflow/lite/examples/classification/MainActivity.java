@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity   {
         }
         //____________________________________________________________
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(MyPreferences.MY_PREFERENCES, 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
         model_id=pref.getInt(MyPreferences.MODEL_ID, -1); // getting Integer
         modelBtn= findViewById(R.id.model_btn);
@@ -657,6 +657,18 @@ public class MainActivity extends AppCompatActivity   {
                     .add(R.id.historyFragmentContainer, fragment)
                     .commit();
         }
+
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked){
+                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
+                }else{
+                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
+                }
+            }
+        });
 
 
 

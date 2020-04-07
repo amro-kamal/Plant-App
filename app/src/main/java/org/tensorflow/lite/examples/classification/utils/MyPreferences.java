@@ -16,14 +16,16 @@ public class MyPreferences  {
     public static final  boolean IS_lOGGEDIN = true;
 
 
-    public static String getModelOpMode(Context context) {
+
+
+    public static boolean getModelOpMode(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(IS_ONLINE, null);
+                .getBoolean(IS_ONLINE, false);
     }
-    public static void setModelOpMode(Context context,String is_online) {
+    public static void setModelOpMode(Context context,boolean is_online) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putString(IS_ONLINE, is_online)
+                .putBoolean(IS_ONLINE, is_online)
                 .apply();
     }
 
