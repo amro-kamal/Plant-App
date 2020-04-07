@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.util.Log;
+
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
@@ -188,7 +190,10 @@ public abstract class Classifier {
 
   /** Initializes a {@code Classifier}. */
   protected Classifier(Activity activity, Device device, int numThreads) throws IOException {
+    Log.d("kkk", "Classifier: load Mapped file");
     tfliteModel = FileUtil.loadMappedFile(activity, getModelPath());
+    Log.d("kkk", "Classifier:  Mapped file loaded ");
+
     switch (device) {
       case NNAPI:
         nnApiDelegate = new NnApiDelegate();

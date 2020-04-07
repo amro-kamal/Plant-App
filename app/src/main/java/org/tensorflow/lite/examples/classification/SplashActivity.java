@@ -35,8 +35,15 @@ public class SplashActivity extends AppCompatActivity {
 //                        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
 //                        startActivity(intent);                    }
 //                    else{
-                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
+
+
+//                    if(MyPreferences.IS_lOGGEDIN){
+                        Intent intent=new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
+//                    }else{
+//                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
+//                        startActivity(intent);
+//                    }
 //                    }
 
 
@@ -53,3 +60,8 @@ public class SplashActivity extends AppCompatActivity {
         timer.start();
     }
 }
+
+
+
+
+//"https://api.zindi.africa/v1/competitions/iclr-workshop-challenge-1-cgiar-computer-vision-for-crop-disease/files/train.zip" name="auth_token" value="94BY2RZgzVuUHF6nLGgiV9R3"

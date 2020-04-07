@@ -37,6 +37,10 @@
         <activity
             android:name=".OnlineClassifierActivity"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".OfflineClassifierActivity"
+            android:parentActivityName=".MainActivity" />
+
         <activity android:name=".MainActivity" />
         <activity android:name=".ResultActivity" />
         <activity

@@ -2,6 +2,7 @@ package org.tensorflow.lite.examples.classification;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.android.volley.NetworkResponse;
@@ -20,6 +21,14 @@ import java.util.Map;
 public class OnlineClassifierActivity extends ClassifyImageActivity {
 
     private String TAG = "volleyyyyyyyImageClassifier";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.classify_image_activity);
+
+        Set_layout(this);
+        Log.d("kkkk", "ONlineclassifier set leyout... done");
+    }
 
     @Override
     public void classifyImage(final Bitmap bitmap){
@@ -34,8 +43,9 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
                     JSONObject res = new JSONObject(resultResponse);
 
                     JSONObject resultObj = res.getJSONObject("result");
-                    String diseaseId= resultObj.getString("diseaseId");
-                    String confidence =resultObj.getString("confidence");
+                    Log.d("kkk", "onResponse: resultObj"+res);
+                    String diseaseId= resultObj.getString("className");
+                    String confidence =resultObj.getString("probability");
 
                     String imagePath = res.getString("imagePath");
                     String relPath = res.getString("relativePath");

@@ -33,7 +33,11 @@ public class ModelSingleton {
     public void setCurrentModel(String model){
         sModel = model;
     }
-    public String getCurrentModel(){
+    public static String getCurrentModel(){
         return  sModel;
     }
+    public static boolean getIsOnline(){
+        return  isOnline;
+    }
+
 }

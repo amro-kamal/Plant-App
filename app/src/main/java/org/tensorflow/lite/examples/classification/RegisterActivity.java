@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,6 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
     ProgressBar reg_pb;
     Button regBtn;
     RequestQueue requestqueue;
+    TextView logintv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +46,20 @@ public class RegisterActivity extends AppCompatActivity {
         userpassword=(EditText) findViewById(R.id.signup_password_et);
         regBtn=(Button) findViewById(R.id.singup_btn);
         reg_pb=(ProgressBar) findViewById(R.id.signup_Pb);
-         requestqueue = Volley.newRequestQueue(this);
+        logintv=(TextView) findViewById(R.id.reg_to_login);
+
+
+        requestqueue = Volley.newRequestQueue(this);
 
         regBtn.setOnClickListener(view -> {
             register();
         });
 
-
-}
+        logintv.setOnClickListener(v->{
+            Intent intent=new Intent(this,RegisterActivity.class);
+            startActivity(intent);
+        });
+        }
 
 public void register(){
 //signup here

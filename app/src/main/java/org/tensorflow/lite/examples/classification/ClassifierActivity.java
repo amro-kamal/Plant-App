@@ -33,6 +33,10 @@ import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 
 public class ClassifierActivity extends CameraActivity implements OnImageAvailableListener {
+
+    //model=getModel(), device=getDevice(), numThreads=getNumThreads() ==>CameraActivity ,protected
+    //Classifier.create(this, model, device, numThreads);
+
   private static final Logger LOGGER = new Logger();
   private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final float TEXT_SIZE_DIP = 10;

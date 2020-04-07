@@ -30,11 +30,14 @@ public class ResultActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.classification_result_act);
-
+        Log.d("kkk", "Starting Result Activity");
         leafImg = getIntent().getStringExtra("leafImg");
+        Log.d("kkk", "leafImg: "+leafImg);
         confidence = getIntent().getStringExtra("confidence");
-
+        Log.d("kkk", "Result Activity:confidence"+confidence);
         String diseaseId = getIntent().getStringExtra("diseaseId");
+        Log.d("kkk", "Result Activity:diseaseId="+diseaseId);
+
         getDiseaseInfo(diseaseId);
 
 
@@ -69,7 +72,7 @@ public class ResultActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject res) {
-                        Log.d(TAG, res.toString());
+                        Log.d("kkk","disease details for "+id+": "+ res.toString());
                         try {
                             Disease d = new Disease();
                             d.setId(res.getString("disease_id"));
