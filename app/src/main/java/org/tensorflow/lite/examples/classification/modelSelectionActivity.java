@@ -91,13 +91,7 @@ public class modelSelectionActivity extends AppCompatActivity {
                         public void onBoomButtonClick(int index) {
 //                            Toast.makeText(modelSelectionActivity.this, " boom-button No." + index +" is clicked!",Toast.LENGTH_LONG).show();
                             //save the selected model as an app preference
-                            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-                            SharedPreferences.Editor editor = pref.edit();
-                            editor.putInt(MyPreferences.MODEL_ID, index); // Storing model_id
-                            editor.commit();
-//                            Log.d("kkkk","model id is saved to pref ="+index);
-
-//                            Toast.makeText(modelSelectionActivity.this, " model id was saved to app preferences",Toast.LENGTH_LONG).show();
+                            MyPreferences.setModelType(getApplicationContext(), index);
 
                             intent=new Intent(modelSelectionActivity.this,MainActivity.class);
 //                            intent.putExtra("Model ID",index);
@@ -154,12 +148,4 @@ public class modelSelectionActivity extends AppCompatActivity {
     }
 
   }
-
-
-
-
-
-
-
-
 
