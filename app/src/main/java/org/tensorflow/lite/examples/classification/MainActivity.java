@@ -1,4 +1,5 @@
 package org.tensorflow.lite.examples.classification;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -81,61 +82,33 @@ public class MainActivity extends AppCompatActivity   {
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(MyPreferences.MY_PREFERENCES, 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
-        model_id=pref.getInt(MyPreferences.MODEL_ID, -1); // getting Integer
+
+        model_id=  MyPreferences.getModelType(this) ; // getting Integer
+        Log.d("kkkk","loaded model id="+model_id);
         modelBtn= findViewById(R.id.model_btn);
         setCurrentModel(model_id);
-        Log.d("kkkk","loaded prefered-model id="+model_id);
 
-        //_______________________________________________________________
 
         bmb = (BoomMenuButton) findViewById(R.id.bmb5);
         initializeBmb1();
         modelBtn.setOnClickListener(v -> bmb.boom());
 
         // read preference , set val in singleton
-
-        boolean is_online =true;// MyPreferences.getModelOpMode(this);
+        boolean isOnline = MyPreferences.getModelOpMode(this);
         modeSwitch =  findViewById(R.id.mode_switch);
-        modeSwitch.setChecked(is_online);
+        modeSwitch.setChecked(isOnline);
         modeSwitch.setTextOff("offline");
         modeSwitch.setTextOn("online");
-
-        if(is_online){    //this if-else can be removed
-            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
-
-        }else{
-            ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
-           // OfflineClassifierActivity.downloadModel(ModelSingleton.getCurrentModel());
-        }
-
-        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // true if the switch is in the On position
-                if(isChecked){
-                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
-                    Log.d("kkk", "oooooooonline mode isChecked="+isChecked+" ModelSingleton.Isonline="+ModelSingleton.getIsOnline());
-
-                }else{
-                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
-                    Log.d("kkk", "offffffffline mode isChecked="+isChecked+" ModelSingleton.Isonline="+ModelSingleton.getIsOnline());
-
-//                    OfflineClassifierActivity.downloadModel(ModelSingleton.getCurrentModel());
-
-                   //OfflineClassifierActivity.downloadModel("remote_mobilenet_quant");
-                }
-            }
-        });
-
+        Log.d("kkkk","model isssssssss ="+isOnline);
+        ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
         Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
 
 
 
-        cameraBtn.setOnClickListener(v -> openRealTimeClasifierActivity());
-
+        cameraBtn.setOnClickListener(v -> openClasifierActivity());
         ArrayList<imageFolder> folds = getPicturePaths();
-        Log.d("kkkk","getPicturePaths done");
 
 
         // initialisation with id's
@@ -143,7 +116,7 @@ public class MainActivity extends AppCompatActivity   {
         // Set Horizontal Layout Manager
         // for Recycler view
         HorizontalLayout = new LinearLayoutManager(MainActivity.this,
-                LinearLayoutManager.HORIZONTAL,false);
+                                                                LinearLayoutManager.HORIZONTAL,false);
         recyclerView.setLayoutManager(HorizontalLayout);
 
 
@@ -153,20 +126,19 @@ public class MainActivity extends AppCompatActivity   {
         } else {
             Log.d("kkkk", "folds size="+folds.size());
             ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
-            Log.d("kkkk", "getAllImagesByFolder done");
 
             gAdapter = new GalleryItemAdaptor(images);
             recyclerView.setAdapter(gAdapter);
             Log.d("imagessize","images size is "+images.size());
         }
 
-        gallaryBtn.setOnClickListener(v -> {
-            //////open the gallary
-            Intent gallary_intent = new Intent();
-            gallary_intent.setType("image/*");
-            gallary_intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(gallary_intent, "select picture"), PICK_IMAGE_CODE);
-        });
+       gallaryBtn.setOnClickListener(v -> {
+           //////open the gallary
+           Intent gallary_intent = new Intent();
+           gallary_intent.setType("image/*");
+           gallary_intent.setAction(Intent.ACTION_GET_CONTENT);
+           startActivityForResult(Intent.createChooser(gallary_intent, "select picture"), PICK_IMAGE_CODE);
+       });
 
         //Histroyitems list Fragment
         FragmentManager fm = getSupportFragmentManager();
@@ -191,11 +163,10 @@ public class MainActivity extends AppCompatActivity   {
         });
 
 
-
-
     }
 
     private void setCurrentModel(int model_id){
+        MyPreferences.setModelType(getApplicationContext(), model_id);
         switch (model_id){
             case 0: {
                 ModelSingleton.getInstance(getApplicationContext()).setCurrentModel(ModelSingleton.TOMATO_MODEL);
@@ -214,8 +185,6 @@ public class MainActivity extends AppCompatActivity   {
             }
         }
     }
-
-
 
 
     private ArrayList<imageFolder> getPicturePaths() {
@@ -299,7 +268,6 @@ public class MainActivity extends AppCompatActivity   {
         }
         return images;
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -307,12 +275,9 @@ public class MainActivity extends AppCompatActivity   {
             imageUri = data.getData();
             Log.d("imageuri","image received");
             Intent intent;
-            if(ModelSingleton.getIsOnline()){
-                Log.d("kkk", "onActivityResult: send image to ONline clasifier ,ModelSingleton.getIsOnline()="+ModelSingleton.getIsOnline());
+            if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
                 intent = new Intent(this , OnlineClassifierActivity.class);
             }else{
-                Log.d("kkk", "onActivityResult: send image to Offfline clasifier,ModelSingleton.getIsOnline()="+ModelSingleton.getIsOnline());
-
                 intent = new Intent(this , OfflineClassifierActivity.class);
             }
             intent.putExtra("imageUri", imageUri.toString());
@@ -323,35 +288,10 @@ public class MainActivity extends AppCompatActivity   {
     }
 
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
-//            imageUri = data.getData();
-//            Log.d("imageuri","image received");
-//
-//            Intent intent;
-//            if(ModelSingleton.getIsOnline()) { intent = new Intent(this, OnlineClassifierActivity.class);}
-//            else { intent = new Intent(this, OfflineClassifierActivity.class);}
-//
-//            intent.putExtra("imageUri", imageUri.toString());
-//            startActivity(intent);
-//            Log.d("imageuri","image sending");
-//
-//        }
-//    }
-
-    public void openRealTimeClasifierActivity() {
-        if(ModelSingleton.getIsOnline()){
-
-            Toast.makeText(this, "you can't open camera in online mode", Toast.LENGTH_LONG).show();
-        }
-        else{
-            Intent intent = new Intent(this, ClassifierActivity.class);
-            startActivity(intent);
-        }
+    public void openClasifierActivity() {
+        Intent intent = new Intent(this, ClassifierActivity.class);
+        startActivity(intent);
     }
-
 
 
     public class GalleryItemAdaptor extends RecyclerView.Adapter<GalleryItemHolder> {
@@ -484,10 +424,6 @@ public class MainActivity extends AppCompatActivity   {
                     @Override
                     public void onBoomButtonClick(int index) {
                         model_id=index;
-                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putInt(MyPreferences.MODEL_ID, model_id); // Storing model_id
-                        editor.commit();
                         Toast.makeText(MainActivity.this, " model id was saved to app preferences",Toast.LENGTH_LONG).show();
                         setCurrentModel(model_id); // setSingletonVal
                         Log.d("kkkk","model id="+model_id);
