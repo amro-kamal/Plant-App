@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity   {
     private static final int PICK_IMAGE_CODE = 1;
     public Uri imageUri;
     private int STORAGE_PERMISSION_CODE = 1;
-    BoomMenuButton bmb;
+    //BoomMenuButton bmb;
     public static  Boolean on_off_line;
     private Switch modeSwitch;
     int model_id;
@@ -85,20 +85,19 @@ public class MainActivity extends AppCompatActivity   {
 
         model_id=  MyPreferences.getModelType(this) ; // getting Integer
         Log.d("kkkk","loaded model id="+model_id);
-        modelBtn= findViewById(R.id.model_btn);
-        setCurrentModel(model_id);
+        //modelBtn= findViewById(R.id.model_btn);
+        //setCurrentModel(model_id);
 
 
-        bmb = (BoomMenuButton) findViewById(R.id.bmb5);
-        initializeBmb1();
-        modelBtn.setOnClickListener(v -> bmb.boom());
+        //bmb = (BoomMenuButton) findViewById(R.id.bmb5);
+        //initializeBmb1();
+        //modelBtn.setOnClickListener(v -> bmb.boom());
 
         // read preference , set val in singleton
         boolean isOnline = MyPreferences.getModelOpMode(this);
         modeSwitch =  findViewById(R.id.mode_switch);
         modeSwitch.setChecked(isOnline);
-        modeSwitch.setTextOff("offline");
-        modeSwitch.setTextOn("online");
+        modeSwitch.setText(isOnline?"online":"offline");
         Log.d("kkkk","model isssssssss ="+isOnline);
         ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
@@ -122,14 +121,14 @@ public class MainActivity extends AppCompatActivity   {
 
         if (folds.size()==0) {
             recyclerView.setVisibility(View.GONE);
-            Log.d("kkkk","folds.size()==0");
+            //Log.d("kkkk","folds.size()==0");
         } else {
-            Log.d("kkkk", "folds size="+folds.size());
+           // Log.d("kkkk", "folds size="+folds.size());
             ArrayList<pictureFacer> images = getAllImagesByFolder(folds.get(0).getPath());
 
             gAdapter = new GalleryItemAdaptor(images);
             recyclerView.setAdapter(gAdapter);
-            Log.d("imagessize","images size is "+images.size());
+           // Log.d("imagessize","images size is "+images.size());
         }
 
        gallaryBtn.setOnClickListener(v -> {
@@ -431,7 +430,7 @@ public class MainActivity extends AppCompatActivity   {
                     }
                 });
     }
-    private void initializeBmb1() {
+    /*private void initializeBmb1() {
 
         SimpleCircleButton.Builder scb1=getSimpleCircleButtonBuilder(R.drawable.tomato);
         bmb.addBuilder(scb1);
@@ -443,5 +442,5 @@ public class MainActivity extends AppCompatActivity   {
         bmb.addBuilder(scb4);
 
     }
-
+*/
 }

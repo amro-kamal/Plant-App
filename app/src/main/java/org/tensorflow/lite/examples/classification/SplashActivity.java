@@ -31,16 +31,16 @@ public class SplashActivity extends AppCompatActivity {
 
 
                     boolean isFirstTime = MyPreferences.isFirstSelection(SplashActivity.this);
-                    if (isFirstTime) {
+                    /*if (isFirstTime) {
                         Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
                         startActivity(intent);                    }
-                    else {
+                    else {*/
 
 
 //                    if(MyPreferences.IS_lOGGEDIN){
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
-                    }
+                    //}
 //                    }else{
 //                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
 //                        startActivity(intent);
