@@ -585,8 +585,8 @@ public abstract class CameraActivity extends AppCompatActivity
   }
 
   protected Device getDevice() {
-    return device;
-  }
+        return device;
+    }
 
   private void setDevice(Device device) {
     if (this.device != device) {

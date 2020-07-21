@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.content.Context;
+import android.util.Log;
 
 public class ModelSingleton {
     private static ModelSingleton mSelectedModelInstance;
@@ -27,6 +28,7 @@ public class ModelSingleton {
     }
 
     public  void setIsOnline(boolean online) {
+        Log.i("kkkk", "model is"+online);
         isOnline = online;
     }
 

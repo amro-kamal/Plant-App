@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,6 +36,7 @@ import com.google.firebase.ml.custom.FirebaseModelOutputs;
 //import Classifier;
 //import MyPreferences;
 
+import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier;
 import org.tensorflow.lite.examples.classification.utils.MyPreferences;
 
@@ -51,59 +54,9 @@ import java.util.Map;
 
 
 public class OfflineClassifierActivity extends ClassifyImageActivity {
-    FirebaseCustomLocalModel localModel;
-    private  static FirebaseCustomRemoteModel remoteModel;
-    private final int MODEL_DIM = 224;
-    public static String remote_model_id= "remote"+ MyPreferences.MODEL_ID;
 
-    public  static void downloadModel(String model_name){
-         remoteModel = new FirebaseCustomRemoteModel.Builder(model_name).build();
-//        remoteModel = new FirebaseCustomRemoteModel.Builder(remote_model_id).build();
-
-
-        if(remoteModel==null){
-            Log.d("kkkk", "remote model ==null");
-        }
-        else {
-            startProgAnim();
-            Log.d("kkkk", "remote model="+remoteModel.toString());
-
-
-            FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
-                    .requireWifi()
-                    .build();
-
-            FirebaseModelManager.getInstance().download(remoteModel, conditions)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("kkkk", "model is downloaded ,model name is :"+remoteModel.getModelName());
-
-                        }
-                    })
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // Success.
-                            stopProgAnim();
-
-
-                            //Log.d("kkkk", " model downloading complete");
-//                            Toast.makeText(getApplicationContext(), "download task finished", Toast.LENGTH_LONG).show();
-                        }
-
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("kkkk", " model download Failed!!!!!!!!!!"+e.getMessage());
-                        }
-                    });
-        }
-
-
-    }
-
+    private Classifier classifier;
+    private static final Logger LOGGER = new Logger();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,42 +65,12 @@ public class OfflineClassifierActivity extends ClassifyImageActivity {
         Set_layout(this);
         Log.d("kkkk","Offlineclassifier set leyout... done");
 
-        //model should be downloaded before this
-        downloadModel("remote_mobilenet_model");   //remote_mobilenet_quant
+        recreateClassifier(Classifier.Model.FLOAT, Classifier.Device.CPU,3);
+        if (classifier == null) {
+            LOGGER.e("No classifier on preview!");
+            return;
+        }
 
-
-
-        FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
-
-                .addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean isDownloaded) {
-                        FirebaseModelInterpreterOptions options;
-                        if (isDownloaded) {
-                            Log.d("kkkkk", "yeeeeeesssssssssss model downloaded");
-                                            }
-                        else{
-                            Log.d("kkkkk", "isModelDownloaded: model notttttttt downloaded");
-
-                        }
-                    }})
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                                    // Task failed with an exception
-                                                    // ...
-                                Log.d("kkkkk", "model notttttttttt downloaded");
-                                                }
-                                            });
-
-
-
-
-//         localModel = new FirebaseCustomLocalModel.Builder()
-//                .setAssetFilePath("mobilenet_v1_1.0_224.tflite")
-//                .build();
-//         Log.d("kkkk","localModel created");
 
 
     }
@@ -156,116 +79,66 @@ public class OfflineClassifierActivity extends ClassifyImageActivity {
 
     @Override
     public void classifyImage(final Bitmap bitmap) {
-        // get image in the shape of  bitmap
-        Log.d("kkkk","start classify Image Method");
-
-
-            float[][][][] input = bitmapToInputArray(bitmap);
-
-            try {
-                FirebaseModelInputOutputOptions inputOutputOptions = createInputOutputOptions();
-                // [START mlkit_run_inference]
-                FirebaseModelInputs inputs = new FirebaseModelInputs.Builder()
-                        .add(input)  // add() as many input arrays as your model requires
-                        .build();
-
-//                FirebaseModelInputOutputOptions finalInputOutputOptions = inputOutputOptions;
-                FirebaseModelManager.getInstance().isModelDownloaded(remoteModel)
-
-                        .addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                            @Override
-                            public void onSuccess(Boolean isDownloaded) {
-                                FirebaseModelInterpreterOptions options;
-                                if (isDownloaded) {
-                                    Log.d("kkkkk", "Classify Image method: model yeeeeeesssssssssss downloaded");
-
-                                    options = new FirebaseModelInterpreterOptions.Builder(remoteModel).build();
-
-                                    FirebaseModelInterpreter firebaseInterpreter = null;
-                                    try {
-                                        firebaseInterpreter = FirebaseModelInterpreter.getInstance(options);
-                                        Log.d("kkkk"," classify Image Method : FirebaseModelInterpreter");
-
-                                    } catch (FirebaseMLException e) {
-                                        e.printStackTrace();
-                                    }
+        final int sensorOrientation = 0;
 
 
 
-                                    firebaseInterpreter.run(inputs, inputOutputOptions)
-                                            .addOnSuccessListener(
-                                                    new OnSuccessListener<FirebaseModelOutputs>() {
-                                                        @Override
-                                                        public void onSuccess(FirebaseModelOutputs result) {
-                                                            Log.d("kkkk"," classify Image Method : FirebaseModelInterpreter.run....: OnSucsess");
-
-                                                            // ...
-                                                            float[][] output = result.getOutput(0);
-                                                            float[] probabilities = output[0];
-                                                            SendResultToResultActivity(probabilities,"labels.txt");
-
-                                                        }
-                                                    })
-                                            .addOnFailureListener(
-                                                    new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            // Task failed with an exception
-                                                            // ...
-                                                            Log.d("kkkkkk", "faaaaaaaaaaaaaaaailed");
-                                                            Log.d("kkk", "exception is : "+e.getMessage());
-
-                                                        }
-                                                    });
-
-                                } else {
-                                    Log.d("kkkkk", "model  not downloaded");
-                                }
-                                // ...
-                            }
-                        });
+            if (classifier != null) {
+                final long startTime = SystemClock.uptimeMillis();
+                final List<Classifier.Recognition> results =
+                        classifier.recognizeImage(bitmap, sensorOrientation);
+                LOGGER.v("Detect: %s", results);
 
 
-            } catch (FirebaseMLException e) {
-                e.printStackTrace();
+                Classifier.Recognition recognition = results.get(0);
+                String confidence = "";
+                String title = "";
+                String fakeDiseaseId = "gbr12";
+
+                if (recognition != null) {
+                    title = recognition.getTitle();
+                    confidence = String.format("%.2f", (100 * recognition.getConfidence()));
+
+                }
+                // go to Result Activity
+                Intent in = new Intent(getBaseContext(), ResultActivity.class);
+                //TODO: in futre use imagePath for leafImg
+                //TODO:  3333333333333333333333333333
+                //in.putExtra("leafImg" ,relPath);
+                in.putExtra("diseaseId", fakeDiseaseId);
+                in.putExtra("confidence", confidence);
+                //startActivity(in);
             }
 
     }
-    private FirebaseModelInputOutputOptions createInputOutputOptions() throws FirebaseMLException {
-        // [START mlkit_create_io_options]
-        FirebaseModelInputOutputOptions inputOutputOptions =
-                new FirebaseModelInputOutputOptions.Builder()
-                        .setInputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 224, 224, 3})
-                        .setOutputFormat(0, FirebaseModelDataType.FLOAT32, new int[]{1, 1001})
-                        .build();
-        // [END mlkit_create_io_options]
-
-        return inputOutputOptions;
-    }
-    private float[][][][] bitmapToInputArray(Bitmap bmp) {
-        // [START mlkit_bitmap_input]
-        Bitmap bitmap = bmp;
-        bitmap = Bitmap.createScaledBitmap(bitmap, MODEL_DIM, MODEL_DIM, true);
-
-        int batchNum = 0;
-        float[][][][] input = new float[1][MODEL_DIM][MODEL_DIM][3];
-        for (int x = 0; x < MODEL_DIM; x++) {
 
 
-            for (int y = 0; y < MODEL_DIM; y++) {
-                int pixel = bitmap.getPixel(x, y);
-                // Normalize channel values to [-1.0, 1.0]. This requirement varies by
-                // model. For example, some models might require values to be normalized
-                // to the range [0.0, 1.0] instead.
-                input[batchNum][x][y][0] = (Color.red(pixel) - 127) / 128.0f;
-                input[batchNum][x][y][1] = (Color.green(pixel) - 127) / 128.0f;
-                input[batchNum][x][y][2] = (Color.blue(pixel) - 127) / 128.0f;
-            }
+    private void recreateClassifier(Classifier.Model model, Classifier.Device device, int numThreads) {
+        if (classifier != null) {
+            LOGGER.d("Closing classifier.");
+            classifier.close();
+            classifier = null;
         }
-        // [END mlkit_bitmap_input]
+        if (device == Classifier.Device.GPU && model == Classifier.Model.QUANTIZED) {
+            LOGGER.d("Not creating classifier: GPU doesn't support quantized models.");
+            runOnUiThread(
+                    () -> {
+                        Toast.makeText(this, "GPU does not yet supported quantized models.", Toast.LENGTH_LONG)
+                                .show();
+                    });
+            return;
+        }
+        try {
+            LOGGER.d(
+                    "Creating classifier (model=%s, device=%s, numThreads=%d)", model, device, numThreads);
+            classifier = Classifier.create(this, model, device, numThreads);
+        } catch (IOException e) {
+            LOGGER.e(e, "Failed to create classifier.");
+        }
 
-        return input;
+
     }
+
 
 
     public void  SendResultToResultActivity(float[] probabilities,String labelsfilename) {

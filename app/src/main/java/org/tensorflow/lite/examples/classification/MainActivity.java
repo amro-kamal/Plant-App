@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity   {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(MyPreferences.MY_PREFERENCES, 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
 
-        model_id=  MyPreferences.getModelType(this) ; // getting Integer
-        Log.d("kkkk","loaded model id="+model_id);
+        //model_id=  MyPreferences.getModelType(this) ; // getting Integer
+        //Log.d("kkkk","loaded model id="+model_id);
         //modelBtn= findViewById(R.id.model_btn);
         //setCurrentModel(model_id);
 
