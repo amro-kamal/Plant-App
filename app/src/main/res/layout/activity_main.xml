@@ -202,15 +202,15 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
                 />
+
             <TextView
                 android:id="@+id/rain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/rainIcon"
-                android:text="3.9m/s"
-                android:textSize="18dp"
+                android:text="3.9mm"
                 android:textColor="@color/black"
-                />
+                android:textSize="18dp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -243,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/windSpeedIcon"
-                android:text="0.0mm"
+                android:text="3.9m/s"
                 android:textSize="18dp"
                 android:textColor="@color/black"
                 />

@@ -75,7 +75,7 @@ public class ResultActivity extends AppCompatActivity {
                         Log.d("kkk","disease details for "+id+": "+ res.toString());
                         try {
                             Disease d = new Disease();
-                            d.setId(res.getString("disease_id"));
+                            d.setId(res.getString("diseaseId"));
                             d.setTitle(res.getString("title"));
                             d.setCategory(res.getString("category"));
                             d.setHosts(res.getString("hosts"));

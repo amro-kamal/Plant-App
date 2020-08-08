@@ -99,7 +99,7 @@ public class HistoryListFragment extends Fragment {
                                 item.setTitle(itemJsonObj.getString("title"));
                                 item.setDate(itemJsonObj.getString("date"));
                                 item.setConfidence(itemJsonObj.getString("confidence"));
-                                item.setDiseaseId(itemJsonObj.getString("disease_id"));
+                                item.setDiseaseId(itemJsonObj.getString("diseaseId"));
                                 JSONObject picObj = itemJsonObj.getJSONObject("pic");
                                 item.setPlantImgUrl(picObj.getString("imageData"));
                                 item.setImgName(picObj.getString("imageName"));
