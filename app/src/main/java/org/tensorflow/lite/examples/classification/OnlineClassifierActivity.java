@@ -44,8 +44,8 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
 
                     JSONObject resultObj = res.getJSONObject("result");
                     Log.d("kkk", "onResponse: resultObj"+res);
-                    String diseaseId= resultObj.getString("className");
-                    String confidence =resultObj.getString("probability");
+                    String diseaseId= resultObj.getString("diseaseId");
+                    String confidence =resultObj.getString("confidence");
 
                     String imagePath = res.getString("imagePath");
                     String relPath = res.getString("relativePath");
