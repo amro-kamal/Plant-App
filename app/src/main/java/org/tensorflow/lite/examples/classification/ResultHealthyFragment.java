@@ -31,10 +31,8 @@ public class ResultHealthyFragment extends Fragment {
     private TextView diseaseIdentifiedTxt;
     private TextView confidenceTxtView;
 
-    private TextView diseaseTypeTxt;
     private ImageView diseaseImg;
     private ImageView healthyGif;
-    private ImageView diseaseImg2;
 
     private Disease disease;
     private String leafImgUrl;
@@ -57,24 +55,24 @@ public class ResultHealthyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.classification_result_frag, container ,false);
+        View v = inflater.inflate(R.layout.healthy_plant_result_frag, container ,false);
         leafImg = v.findViewById(R.id.leafImg);
         diseaseImg = v.findViewById(R.id.diseaseImage);
-        diseaseImg2 = v.findViewById(R.id.diseaseImage2);
         diseaseIdentifiedTxt = v.findViewById(R.id.diseaseIdentifiedTxt);
-        diseaseTypeTxt = v.findViewById(R.id.diseaseTypeTxt);
         confidenceTxtView= v.findViewById(R.id.model_confidence);
         healthyGif= v.findViewById(R.id.healthyImg);
 
 
 
 
+
+
+        Log.i("kkkkk","inside healthhhhhhhhhhhhhhhhhhh");
         confidence = confidence.substring(0,6);
         float conf = 100 * Float.parseFloat(confidence);
         String plant = ModelSingleton.getInstance(getActivity()).getCurrentModel();
 
-        diseaseIdentifiedTxt.setText("Disease identified in "+ plant +" Plant.");
-        diseaseTypeTxt.setText(disease.getTitle());
+        diseaseIdentifiedTxt.setText("Your "+ plant +" Plant is healthy.");
         confidenceTxtView.setText("confidence "+ conf+ "%");
 
         Glide.with(getActivity())  //2
@@ -96,18 +94,13 @@ public class ResultHealthyFragment extends Fragment {
                 .into(diseaseImg); //8
 
         Glide.with(getActivity())  //2
-                .load(diseaseImgUrl)//3
+                .load("https://wf-live.enniscdn.net/wp-content/uploads/2019/05/20115802/Plant_V1.gif") //3
                 .centerCrop() //4
-                .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.placeholder) //5
-                .error(R.drawable.broken_image) //6
-                .fallback(R.drawable.broken_image) //7
-                .into(diseaseImg2); //8
+                .fallback(R.drawable.broken_image)
+                .into(healthyGif); //8
 
-        Glide.with(getActivity())
-                .load("https://wf-live.enniscdn.net/wp-content/uploads/2019/05/20115802/Plant_V1.gif")
-                .placeholder(R.drawable.placeholder) //5
-                .into(healthyGif);
+
 
 
 
