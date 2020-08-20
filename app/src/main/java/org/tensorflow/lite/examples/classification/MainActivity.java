@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity   {
     private int STORAGE_PERMISSION_CODE = 1;
     //BoomMenuButton bmb;
     public static  Boolean on_off_line;
-    //private Switch modeSwitch;
+    private Switch modeSwitch;
     int model_id;
     LinearLayout modelBtn;
 
@@ -95,11 +95,11 @@ public class MainActivity extends AppCompatActivity   {
 
         // read preference , set val in singleton
         boolean isOnline = MyPreferences.getModelOpMode(this);
-        /*modeSwitch =  findViewById(R.id.mode_switch);
+        modeSwitch =  findViewById(R.id.mode_switch);
         modeSwitch.setChecked(isOnline);
         modeSwitch.setText(isOnline?"online":"offline");
         Log.d("kkkk","model isssssssss ="+isOnline);
-        ModelSingleton.getInstance(this).setIsOnline(isOnline);*/
+        ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
         Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
         Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity   {
                     .commit();
         }
 
-        /*modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity   {
                     ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
                 }
             }
-        });*/
+        });
 
 
     }
