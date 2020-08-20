@@ -57,14 +57,18 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Disease disease){
-        /*FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+        //TODO: write code to check for healthy classes
+        //TODO: FIX GIF LOADING
+        //
+        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
         fragment = ResultFragment.newInstance(disease , leafImg , confidence);
         transaction2.replace(R.id.resultFragmentContainer, fragment);
-        transaction2.commit();*/
+        transaction2.commit();
+        /*
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
         fragment = ResultHealthyFragment.newInstance(disease , leafImg , confidence);
         transaction2.replace(R.id.resultFragmentContainer, fragment);
-        transaction2.commit();
+        transaction2.commit();*/
     }
 
     public void getDiseaseInfo(String id){
