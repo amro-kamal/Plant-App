@@ -273,12 +273,12 @@ public class MainActivity extends AppCompatActivity   {
         if (requestCode == PICK_IMAGE_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
             Log.d("imageuri","image received");
-            Intent intent;
-            if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
+            Intent intent = new Intent(this , OnlineClassifierActivity.class);;
+            /*if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
                 intent = new Intent(this , OnlineClassifierActivity.class);
             }else{
                 intent = new Intent(this , OfflineClassifierActivity.class);
-            }
+            }*/
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
             Log.d("imageuri","image sending");
