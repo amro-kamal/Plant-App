@@ -34,6 +34,7 @@
                 />
 
             <TextView
+                android:id="@+id/commentTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -66,7 +67,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/healthyImg"
+        android:id="@+id/gifImg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
