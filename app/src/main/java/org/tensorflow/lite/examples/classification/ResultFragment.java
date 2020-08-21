@@ -39,15 +39,17 @@ public class ResultFragment extends Fragment {
     private Disease disease;
     private String leafImgUrl;
     private String confidence;
+    private String plantName;
 
-    public ResultFragment(Disease d ,String img , String conf) {
+    public ResultFragment(Disease d ,String img , String conf, String plantname) {
         disease  = d;
         leafImgUrl = img;
         confidence = conf;
+        plantName = plantname;
     }
 
-    public static ResultFragment newInstance(Disease disease , String leafImg , String confidence){
-        return new ResultFragment(disease ,leafImg , confidence);
+    public static ResultFragment newInstance(Disease disease , String leafImg , String confidence, String plantName){
+        return new ResultFragment(disease ,leafImg , confidence,plantName);
     }
 
     @Nullable
@@ -72,9 +74,8 @@ public class ResultFragment extends Fragment {
 
         confidence = confidence.substring(0,6);
         float conf = 100 * Float.parseFloat(confidence);
-        String plant = ModelSingleton.getInstance(getActivity()).getCurrentModel();
 
-        diseaseIdentifiedTxt.setText("Disease identified in "+ plant +" Plant.");
+        diseaseIdentifiedTxt.setText("Disease identified in "+ plantName +" Plant.");
         diseaseTypeTxt.setText(disease.getTitle());
         categoryTxt.setText(disease.getCategory());
         confidenceTxtView.setText("confidence "+ conf+ "%");
