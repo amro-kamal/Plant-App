@@ -104,7 +104,7 @@ public abstract class ClassifyImageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("kkk", "onResume");
-//        stopProgAnim();
+        stopProgAnim();
     }
 
 
