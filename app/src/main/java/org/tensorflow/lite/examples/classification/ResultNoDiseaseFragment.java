@@ -101,7 +101,7 @@ public class ResultNoDiseaseFragment extends Fragment {
             diseaseIdentifiedTxt.setVisibility(View.GONE);
             confidenceTxtView.setVisibility(View.GONE);
             Glide.with(getActivity())  //2
-                    .load("https://wf-live.enniscdn.net/wp-content/uploads/2019/05/20115802/Plant_V1.gif") //3
+                    .load("https://media3.giphy.com/media/6265Sk4zLshv2688OZ/giphy.gif") //3
                     .centerCrop() //4
                     .placeholder(R.drawable.placeholder) //5
                     .fallback(R.drawable.broken_image)
