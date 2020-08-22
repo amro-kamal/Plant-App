@@ -22,7 +22,7 @@ import org.tensorflow.lite.support.common.TensorOperator;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
 
 /** This TensorFlow Lite classifier works with the quantized MobileNet model. */
-public class ClassifierQuantizedMobileNet extends Classifier {
+public class ClassifierQuantizedResNet extends Classifier {
 
   /**
    * The quantized model does not require normalization, thus set mean as 0.0f, and std as 1.0f to
@@ -38,11 +38,11 @@ public class ClassifierQuantizedMobileNet extends Classifier {
   private static final float PROBABILITY_STD = 255.0f;
 
   /**
-   * Initializes a {@code ClassifierQuantizedMobileNet}.
+   * Initializes a {@code ClassifierQuantizedResNet}.
    *
    * @param activity
    */
-  public ClassifierQuantizedMobileNet(Activity activity, Device device, int numThreads)
+  public ClassifierQuantizedResNet(Activity activity, Device device, int numThreads)
       throws IOException {
     super(activity, device, numThreads);
   }
@@ -53,7 +53,7 @@ public class ClassifierQuantizedMobileNet extends Classifier {
     // see build.gradle for where to obtain this file. It should be auto
     // downloaded into assets.
 //    return "mobilenet_v1_1.0_224_quant.tflite";
-    return "remote_mobilenet_model.tflite";
+    return "quantized_plants_resnet_224.tflite";
 
   }
 

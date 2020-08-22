@@ -32,7 +32,6 @@ import java.util.PriorityQueue;
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.examples.classification.env.Logger;
-import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.gpu.GpuDelegate;
 import org.tensorflow.lite.nnapi.NnApiDelegate;
 import org.tensorflow.lite.support.common.FileUtil;
@@ -112,7 +111,7 @@ public abstract class Classifier {
   public static Classifier create(Activity activity, Model model, Device device, int numThreads)
       throws IOException {
     if (model == Model.QUANTIZED) {
-      return new ClassifierQuantizedMobileNet(activity, device, numThreads);
+      return new ClassifierQuantizedResNet(activity, device, numThreads);
     } else {
       return new ClassifierFloatMobileNet(activity, device, numThreads);
     }
