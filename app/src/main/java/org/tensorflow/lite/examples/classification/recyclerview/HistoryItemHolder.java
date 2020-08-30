@@ -60,14 +60,18 @@ public class HistoryItemHolder extends RecyclerView.ViewHolder{
         //imgUrl = h.getPlantImgUrl();
         imgUrl = "uploads/"+h.getImgName();
 
-        Glide.with(context)  //2
-                .load(NetworkingLab.TEMP_URL+imgUrl) //3
-                .centerCrop() //4
-                .placeholder(R.drawable.placeholder) //5
-                .error(R.drawable.broken_image) //6
-                .fallback(R.drawable.broken_image) //7
-                .into(img); //8
+//        Glide.with(context)  //2
+//                .load(NetworkingLab.TEMP_URL+imgUrl) //3
+//                .centerCrop() //4
+//                .placeholder(R.drawable.placeholder) //5
+//                .error(R.drawable.broken_image) //6
+//                .fallback(R.drawable.broken_image) //7
+//                .into(img); //8
+
+        img.setImageBitmap(h.getHistoryImage());
+
     }
+
 
 
 }

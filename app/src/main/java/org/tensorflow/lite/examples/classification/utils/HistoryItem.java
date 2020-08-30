@@ -9,7 +9,7 @@ public class HistoryItem {
     private String diseaseId;
     private String confidence;
     private String imgName;
-
+private Bitmap historyImage;
     public HistoryItem(){
 
     }
@@ -65,5 +65,13 @@ public class HistoryItem {
 
     public void setImgName(String imgName) {
         this.imgName = imgName;
+    }
+
+    public Bitmap getHistoryImage() {
+        return historyImage;
+    }
+
+    public void setHisoryImage(Bitmap historyImage) {
+        this.historyImage = historyImage;
     }
 }

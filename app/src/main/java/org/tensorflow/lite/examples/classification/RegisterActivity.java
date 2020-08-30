@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         logintv.setOnClickListener(v->{
-            Intent intent=new Intent(this,RegisterActivity.class);
+            Intent intent=new Intent(this,LogInActivity.class);
             startActivity(intent);
         });
         }
@@ -85,24 +85,30 @@ public void onResponse(JSONObject response) {
         try {
         String success=response.getString("message");
         if(success.equals("success")){
-        Log.d("kkkk", "reg succes");
+        Log.d("kkkk", "success");
 
         Toast.makeText(RegisterActivity.this,"Log in success",Toast.LENGTH_LONG).show();
-        boolean isFirstTime = MyPreferences.isFirstSelection(RegisterActivity.this);
-        if (isFirstTime) {
-        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
-        startActivity(intent);                    }
-        else{
+//        boolean isFirstTime = MyPreferences.isFirstSelection(RegisterActivity.this);
+//        if (isFirstTime) {
+//        Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
+//        startActivity(intent);                    }
+//        else{
         Intent intent=new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        }
+//        }
 
         }
-        else if(success.equals("faild")){
-        Log.d("kkkk", "reg success");
-        Toast.makeText(RegisterActivity.this,"registeration faild",Toast.LENGTH_LONG).show();
-        reg_pb.setVisibility(View.GONE);
+
+        else if(success.equals("This email is already registered")){
+            Log.d("kkkk", "register , This email is already registered");
+            Toast.makeText(RegisterActivity.this,"This email is already registered",Toast.LENGTH_LONG).show();
+            reg_pb.setVisibility(View.GONE);
         }
+        else {
+                Log.d("kkkk", "reg error :"+success);
+                Toast.makeText(RegisterActivity.this,"registeration faild",Toast.LENGTH_LONG).show();
+                reg_pb.setVisibility(View.GONE);
+            }
 
 
         } catch (JSONException e) {

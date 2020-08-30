@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.tensorflow.lite.examples.classification.utils.DataPart;
+import org.tensorflow.lite.examples.classification.utils.MyPreferences;
 import org.tensorflow.lite.examples.classification.utils.VolleyMultipartRequest;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
 
     @Override
     public void classifyImage(final Bitmap bitmap){
+        Log.d(TAG , "online classifier ,Classify image ");
+
         final String url = NetworkingLab.END_POINT + "classify";
         String  REQUEST_TAG = "com.resultactivity.volleyStringRequest.classifyImage";
         startProgAnim();
@@ -44,8 +47,8 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
 
                     JSONObject resultObj = res.getJSONObject("result");
                     Log.d("kkk", "onResponse: resultObj"+res);
-                    String diseaseId= resultObj.getString("className");
-                    String confidence =resultObj.getString("probability");
+                    String diseaseId= resultObj.getString("diseaseId");
+                    String confidence =resultObj.getString("confidence");
 
                     String imagePath = res.getString("imagePath");
                     String relPath = res.getString("relativePath");
@@ -63,14 +66,16 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.d(TAG , "online classifier ,catch error: "+e);
+
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG , "error: "+error);
+                Log.d("kkk" , "online classifier ,Connection error: "+error);
                 stopProgAnim();
-                Toast.makeText(getBaseContext() , "Connection failed! Try Again." , Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext() , "online classifier ,Connection failed! Try Again." , Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
@@ -78,6 +83,8 @@ public class OnlineClassifierActivity extends ClassifyImageActivity {
                 Map<String, String> params = new HashMap<>();
                 String currentModel = ModelSingleton.getInstance(getApplicationContext()).getCurrentModel();
                 params.put("model", currentModel);
+                String user_email = MyPreferences.USER_EMAIL;
+                params.put("user_email", user_email);
                 return params;
             }
 

@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity   {
         Log.d("kkkk","model isssssssss ="+isOnline);
         ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
-        Button cameraBtn = (Button) findViewById(R.id.cameraBtn);
-        Button gallaryBtn = (Button) findViewById(R.id.gallaryBtn);
+        LinearLayout cameraBtn = (LinearLayout) findViewById(R.id.cameraBtn);
+        LinearLayout gallaryBtn = (LinearLayout) findViewById(R.id.gallaryBtn);
 
 
 

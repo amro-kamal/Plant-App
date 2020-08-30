@@ -31,10 +31,13 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.classification_result_act);
         Log.d("kkk", "Starting Result Activity");
+
         leafImg = getIntent().getStringExtra("leafImg");
         Log.d("kkk", "leafImg: "+leafImg);
+
         confidence = getIntent().getStringExtra("confidence");
         Log.d("kkk", "Result Activity:confidence"+confidence);
+
         String diseaseId = getIntent().getStringExtra("diseaseId");
         Log.d("kkk", "Result Activity:diseaseId="+diseaseId);
 
@@ -75,18 +78,25 @@ public class ResultActivity extends AppCompatActivity {
                         Log.d("kkk","disease details for "+id+": "+ res.toString());
                         try {
                             Disease d = new Disease();
-                            d.setId(res.getString("diseaseId"));
+                            d.setId(res.getString("disease_id"));
                             d.setTitle(res.getString("title"));
                             d.setCategory(res.getString("category"));
-                            d.setHosts(res.getString("hosts"));
+//                            d.setHosts(res.getString("hosts"));
                             d.setSummary(res.getString("summary"));
                             d.setSymptoms(res.getString("symptoms"));
                             d.setTreatment(res.getString("treatment"));
-                            d.setImageUrl(res.getString("imageUrl"));
+                            d.setImageUrl1(res.getJSONArray("imageUrl").getString(0));
+                            d.setImageUrl2(res.getJSONArray("imageUrl").getString(1));
+                            d.setImageUrl3(res.getJSONArray("imageUrl").getString(2));
+
+                            Log.d("kkk","disease details ,DONE "+res.getJSONArray("imageUrl").getString(0));
+                            Log.d("kkk","disease img url ,"+d.getImageUrl1());
+
                             replaceFragment(d );
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.d("kkk","Result activity, disease details ,catch");
                         }
 
                     }

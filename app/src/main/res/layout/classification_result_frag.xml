@@ -212,6 +212,26 @@
                 android:textColor="@color/raven"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
                 />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Disease Images"
+                />
+            <ImageView
+                android:id="@+id/leafImg2"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginVertical="10dp"
+                />
+            <ImageView
+                android:id="@+id/leafImg3"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginVertical="10dp"
+                />
 
         </LinearLayout>
     </ScrollView>

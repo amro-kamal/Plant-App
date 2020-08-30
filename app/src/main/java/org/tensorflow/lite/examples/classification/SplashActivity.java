@@ -37,14 +37,15 @@ public class SplashActivity extends AppCompatActivity {
                     else {*/
 
 
-//                    if(MyPreferences.IS_lOGGEDIN){
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    //}
-//                    }else{
-//                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
+//                  if(MyPreferences.IS_lOGGEDIN){
+//                        Intent intent = new Intent(getApplicationContext(), MainActivity.class)
 //                        startActivity(intent);
 //                    }
+//                }
+//                    else{
+                        Intent intent=new Intent(getApplicationContext(), LogInActivity.class);
+                       startActivity(intent);
+//                   }
 
 //                    }
 

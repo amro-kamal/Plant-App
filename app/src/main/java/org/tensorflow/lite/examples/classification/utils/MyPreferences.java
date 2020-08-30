@@ -13,7 +13,7 @@ public class MyPreferences  {
         public static final String MODEL_ID = "model_id";
 
     private static final String IS_ONLINE = "IS_ONLINE";
-
+    public static  String USER_EMAIL = "";
 
 
     public static boolean getModelOpMode(Context context) {
