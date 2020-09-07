@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/leafImg"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_green"
+        android:padding="10dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="5dp"
+            >
+
+            <ImageView
+                android:id="@+id/diseaseImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/circle_img"
+                android:src="@drawable/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/commentTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:text="No Disease Detected"
+                />
+
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/diseaseIdentifiedTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:text="Disease identified in Tomato Plant."
+            />
+
+        <TextView
+            android:id="@+id/model_confidence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            tools:text="confidence 44.66%" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/gifImg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="50dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+</LinearLayout>

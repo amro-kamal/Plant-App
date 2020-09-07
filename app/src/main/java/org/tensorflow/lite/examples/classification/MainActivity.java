@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity   {
     private int STORAGE_PERMISSION_CODE = 1;
     //BoomMenuButton bmb;
     public static  Boolean on_off_line;
-    private Switch modeSwitch;
+    //private Switch modeSwitch;
     int model_id;
     LinearLayout modelBtn;
 
