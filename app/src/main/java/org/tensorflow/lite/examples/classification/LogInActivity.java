@@ -80,8 +80,10 @@ public class LogInActivity extends AppCompatActivity {
 //                                                Intent intent=new Intent(getApplicationContext(), modelSelectionActivity.class);
 //                                                startActivity(intent);                    }
 //                                            else{
+                                            MyPreferences.setUserEmail(LogInActivity.this,email);
                                             MyPreferences.USER_EMAIL=email;
-                                                Intent intent=new Intent(getApplicationContext(), MainActivity.class);
+                                            MyPreferences.setIsLoggedIn(LogInActivity.this,true);
+                                            Intent intent=new Intent(getApplicationContext(), MainActivity.class);
                                                 startActivity(intent);
 //                                            }
 

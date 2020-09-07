@@ -94,12 +94,12 @@ public class MainActivity extends AppCompatActivity   {
         //modelBtn.setOnClickListener(v -> bmb.boom());
 
         // read preference , set val in singleton
-        boolean isOnline = MyPreferences.getModelOpMode(this);
-        modeSwitch =  findViewById(R.id.mode_switch);
-        modeSwitch.setChecked(isOnline);
-        modeSwitch.setText(isOnline?"online":"offline");
-        Log.d("kkkk","model isssssssss ="+isOnline);
-        ModelSingleton.getInstance(this).setIsOnline(isOnline);
+//        boolean isOnline = MyPreferences.getModelOpMode(this);
+//        modeSwitch =  findViewById(R.id.mode_switch);
+//        modeSwitch.setChecked(isOnline);
+//        modeSwitch.setText(isOnline?"online":"offline");
+//        Log.d("kkkk","model isssssssss ="+isOnline);
+//        ModelSingleton.getInstance(this).setIsOnline(isOnline);
 
         LinearLayout cameraBtn = (LinearLayout) findViewById(R.id.cameraBtn);
         LinearLayout gallaryBtn = (LinearLayout) findViewById(R.id.gallaryBtn);
@@ -149,17 +149,17 @@ public class MainActivity extends AppCompatActivity   {
                     .commit();
         }
 
-        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // do something, the isChecked will be
-                // true if the switch is in the On position
-                if(isChecked){
-                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
-                }else{
-                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(false);
-                }
-            }
-        });
+//        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                // do something, the isChecked will be
+//                // true if the switch is in the On position
+//                if(isChecked){
+//                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
+//                }else{
+//                    ModelSingleton.getInstance(getApplicationContext()).setIsOnline(true);
+//                }
+//            }
+//        });
 
 
     }
@@ -274,11 +274,11 @@ public class MainActivity extends AppCompatActivity   {
             imageUri = data.getData();
             Log.d("imageuri","image received");
             Intent intent;
-            if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
+//            if(ModelSingleton.getInstance(getApplicationContext()).isIsOnline()){
                 intent = new Intent(this , OnlineClassifierActivity.class);
-            }else{
-                intent = new Intent(this , OfflineClassifierActivity.class);
-            }
+//            }else{
+//                intent = new Intent(this , OfflineClassifierActivity.class);
+//            }
             intent.putExtra("imageUri", imageUri.toString());
             startActivity(intent);
             Log.d("imageuri","image sending");

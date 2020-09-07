@@ -1,6 +1,8 @@
 package org.tensorflow.lite.examples.classification;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.tensorflow.lite.examples.classification.recyclerview.HistoryItemHolder;
 import org.tensorflow.lite.examples.classification.recyclerview.HistoryItemsAdaptor;
 import org.tensorflow.lite.examples.classification.utils.HistoryItem;
 import org.tensorflow.lite.examples.classification.utils.MyPreferences;
@@ -103,7 +106,9 @@ public class HistoryListFragment extends Fragment {
         //Do something while loading
 
         Map<String, String> postParam= new HashMap<String, String>();
-        postParam.put("email", MyPreferences.USER_EMAIL);
+        final SharedPreferences Prefreader = getContext().getSharedPreferences(MyPreferences.MY_PREFERENCES, Context.MODE_PRIVATE);
+        String user_email=Prefreader.getString("user_email",MyPreferences.USER_EMAIL);
+        postParam.put("email",user_email);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, new JSONObject(postParam),
                 new Response.Listener<JSONObject>() {
@@ -123,10 +128,12 @@ public class HistoryListFragment extends Fragment {
                                 item.setDate(itemJsonObj.getString("date"));
                                 item.setConfidence(itemJsonObj.getString("confidence"));
                                 item.setDiseaseId(itemJsonObj.getString("disease_id"));
-                                JSONObject picObj = itemJsonObj.getJSONObject("pic");
-                                byte[] decodedBytes = Base64.decode(picObj.getString("img"), Base64.DEFAULT);
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes , 0, decodedBytes.length);
-                                item.setHisoryImage(bitmap);
+                                if(itemJsonObj.get("pic")!=null){
+                                    JSONObject picObj = itemJsonObj.getJSONObject("pic");
+                                    byte[] decodedBytes = Base64.decode(picObj.getString("img"), Base64.DEFAULT);
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes , 0, decodedBytes.length);
+                                    item.setHisoryImage(bitmap);
+                                    }
 //                                item.setPlantImgUrl(picObj.getString("imageData"));
 //                                item.setImgName(picObj.getString("imageName"));
 

@@ -41,8 +41,8 @@
             android:name=".OfflineClassifierActivity"
             android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ResultActivity" />
+        <activity android:name=".MainActivity" android:parentActivityName=".SplashActivity" />
+        <activity android:name=".ResultActivity" android:parentActivityName=".MainActivity" />
         <activity
             android:name=".ClassifierActivity"
             android:label="@string/activity_name_classification"
