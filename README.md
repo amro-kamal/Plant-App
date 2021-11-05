@@ -1,14 +1,17 @@
 ## Plant App
 
-This repo contains the fornt end code for the (Plant App) project done by me and @Maen_Badea.\\
-The project is an android application that classifies several plants diseases using computer vision.\\
+This repo contains the fornt end code for the (Plant App) project done by me and @Maen_Badea.
+
+The project is an android application that classifies several plants diseases using computer vision.
+
 The app works online through internet. It sends the image to the server that hosts the machine learning model that classifies the image.
+
 Now the app covers more than 20 diseases for many plants like (potatos, grap, tomatoes, and others)
 
-### After you click the 'CLASSIFY THE DISEASE' you just need to wait for few seconds to recive:
--[x] Detailed description about the detected disease and its symptoms.
--[x] How to treat the disease.
--[x] Images showing the some affected leaves.
+**After you click the 'CLASSIFY THE DISEASE' you just need to wait for few seconds to recive:**
+- [x] Detailed description about the detected disease and its symptoms.
+- [x] How to treat the disease.
+- [x] Images showing the some affected leaves.
 
 If no disease is detected you will see the text message telling you that the leaf is healthy.
 
@@ -28,13 +31,17 @@ The app will be released in the future.
     <td><img src="images/screen3.jpeg" width=250 height=360></td>
   </tr>
     
-    <tr>
+</table>
+
+<table>
+
+  <tr>
     <td><img src="images/screen4.jpeg" width=250 height=360></td>
     <td><img src="images/screen5.jpeg" width=250 height=360></td>
     <td><img src="images/screen6.jpeg" width=250 height=360></td>
   </tr>
- </table>
-
+    
+</table>
 
 
 
