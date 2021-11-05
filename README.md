@@ -15,7 +15,7 @@ Now the app covers more than 20 diseases for many plants like (potatos, grap, to
 
 If no disease is detected you will see the text message telling you that the leaf is healthy.
 
-The app will be released in the future.
+**Some screenshots from the app (the app will be released in the future).**
 <!--   <tr>
     <td>First Screen Page</td>
      <td>Holiday Mention</td>
@@ -26,9 +26,9 @@ The app will be released in the future.
 <table>
 
   <tr>
-    <td><img src="images/screen1.jpeg" width=250 height=360></td>
-    <td><img src="images/screen2.jpeg" width=250 height=360></td>
-    <td><img src="images/screen3.jpeg" width=250 height=360></td>
+    <td><img src="images/screen1.jpeg" width=250 height=368></td>
+    <td><img src="images/screen2.jpeg" width=250 height=380></td>
+    <td><img src="images/screen3.jpeg" width=250 height=380></td>
   </tr>
     
 </table>
@@ -36,9 +36,9 @@ The app will be released in the future.
 <table>
 
   <tr>
-    <td><img src="images/screen4.jpeg" width=250 height=360></td>
-    <td><img src="images/screen5.jpeg" width=250 height=360></td>
-    <td><img src="images/screen6.jpeg" width=250 height=360></td>
+    <td><img src="images/screen4.jpeg" width=250 height=380></td>
+    <td><img src="images/screen5.jpeg" width=250 height=380></td>
+    <td><img src="images/screen6.jpeg" width=250 height=380></td>
   </tr>
     
 </table>
