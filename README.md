@@ -11,7 +11,7 @@ Now the app covers more than 20 diseases for many plants like (potatos, grap, to
 **After you click the 'CLASSIFY THE DISEASE' you just need to wait for few seconds to recive:**
 - [x] Detailed description about the detected disease and its symptoms.
 - [x] How to treat the disease.
-- [x] Images showing the some affected leaves.
+- [x] Images showing some affected leaves.
 
 If no disease is detected you will see the text message telling you that the leaf is healthy.
 
