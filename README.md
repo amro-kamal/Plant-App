@@ -14,7 +14,7 @@ Now the app covers more than 20 diseases for many plants like (potatos, grap, to
 - [x] Images showing some affected leaves.
 
 
-**We trained many models on Plant Village dataset, including:***
+**We trained many models on Plant Village dataset, including:**
 - [x]  ResNet18
 - [x]  ResNet50
 - [x]  InceptionV3
