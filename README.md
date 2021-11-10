@@ -8,7 +8,7 @@ The app works online through internet. It sends the image to the server that hos
 
 Now the app covers more than 20 diseases for many plants like (potatos, grap, tomatoes, and others)
 
-**After you click the 'CLASSIFY THE DISEASE' you just need to wait for few seconds to recive:**
+**After you click the 'CLASSIFY THE DISEASE' button you just need to wait for few seconds to receive:**
 - [x] Detailed description about the detected disease and its symptoms.
 - [x] How to treat the disease.
 - [x] Images showing some affected leaves.
