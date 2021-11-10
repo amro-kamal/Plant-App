@@ -6,7 +6,9 @@ The project is an android application that classifies several plants diseases us
 
 The app works online through internet. It sends the image to the server that hosts the machine learning model that classifies the image.
 
-Now the app covers more than 20 diseases for many plants like (potatos, grap, tomatoes, and others)
+Now the app covers more than 20 diseases for many plants like (potatos, grap, tomatoes, and others).
+
+Our second [repo](https://github.com/amro-kamal/PDDApp) contains the code for running the model with Tensorflowjs. 
 
 **After you click the 'CLASSIFY THE DISEASE' button you just need to wait for few seconds to receive:**
 - [x] Detailed description about the detected disease and its symptoms.
