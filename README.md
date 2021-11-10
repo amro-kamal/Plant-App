@@ -15,13 +15,17 @@ Now the app covers more than 20 diseases for many plants like (potatos, grap, to
 
 
 **We trained many models on Plant Village dataset, including:**
-- [x]  ResNet18
+- [x]  VGG16
 - [x]  ResNet50
+- [x]  Xception
 - [x]  InceptionV3
-- [x]  DenseNet
 - [x]  MobileNet
 
 All the models achieve >90% accuracy.
+
+![image](https://user-images.githubusercontent.com/37993690/141180544-c016f011-b8b3-4c22-b762-fea5dce7b92a.png)
+
+![image](https://user-images.githubusercontent.com/37993690/141180706-ec98b535-0c08-45c4-a6e2-67e890848874.png)
 
 
 If no disease is detected you will see the text message telling you that the leaf is healthy.
